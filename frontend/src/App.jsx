@@ -6,6 +6,7 @@ import Root from './routes/Root'
 import Fridge from './routes/Fridge'
 import Recipes from './routes/Recipes'
 import Search from './routes/Search'
+import Cart from './routes/Cart'
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
       <Route path='/fridge' element={<Fridge />} />
       <Route path='/recipes' element={<Recipes />} />
       <Route path='/search' element={<Search />} />
+      <Route path='/cart' element={<Cart />} />
     </Routes>
   )
 }

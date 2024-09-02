@@ -4,23 +4,24 @@ import { TbFridge } from "react-icons/tb";
 import { PiBowlFoodBold } from "react-icons/pi";
 import { IoMdSearch } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 
-
-function Home() {
+function Root() {
 
   return (
     <Flex minWidth='100vw' minHeight='100vh' alignItems='center' justify='center' direction='column'>
-        <Heading color='black'>Let me Cook</Heading>
+        <Heading color='orange.500'>Let me Cook</Heading>
         <HStack mt={10} gap={10}>
           <Link to='/fridge'>
-              <IconButton color='black' aria-label='Fridge' icon={<TbFridge />} size='lg' padding='50px 30px' fontSize='50px' />
+              <IconButton colorScheme='orange' variant='solid' aria-label='Fridge' icon={<TbFridge />} size='lg' padding='50px 30px' fontSize='50px' />
           </Link>
           <Link to='/recipes'>
-            <IconButton color='black' aria-label='Recipes' icon={<PiBowlFoodBold />} size='lg' padding='50px 30px' fontSize='50px'/>
+            <IconButton colorScheme='orange' variant='solid' icon={<PiBowlFoodBold />} size='lg' padding='50px 30px' fontSize='50px'/>
           </Link>
           <Link to='/search'>
-            <IconButton color='black' aria-label='Search' icon={<IoMdSearch />} size='lg' padding='50px 30px' fontSize='50px'/>
+            <IconButton colorScheme='orange' variant='solid' icon={<IoMdSearch />} size='lg' padding='50px 30px' fontSize='50px'/>
           </Link>
         
         </HStack>
@@ -29,4 +30,4 @@ function Home() {
   )
 }
 
-export default Home
+export default Root
