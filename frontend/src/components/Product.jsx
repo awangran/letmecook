@@ -27,10 +27,7 @@ export default function Product({ product, quantity }) {
 
         <Flex alignItems='end' justifyContent='space-between'>
             <Flex direction='column'>
-            <Text>{JSON.stringify(product.quantity)}</Text>
-               
-        
-
+                <Text>{product.quantity.number} {product.quantity.unit}</Text>
                 {show && (
                 <>
                     <Text><b>In:</b>{product.dateIn}</Text>
