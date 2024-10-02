@@ -7,10 +7,10 @@ import axios from 'axios'
 
 function Fridge() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const btnRef = React.useRef();
 
   const [products, setProducts] = useState([])
-  useEffect(() => {
+  // Fetch products from the API
+  const fetchProducts = () => {
     axios
       .get('http://localhost:5555/fridge')
       .then((res) => {
@@ -18,14 +18,20 @@ function Fridge() {
       })
       .catch((err) => {
         console.log(err);
-      })
-  } )
+      });
+  };
+
+  // Fetch products when the component mounts
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
 
   return (
     <>
-      <Navbar onOpen={onOpen} btnRef={btnRef} heading='Fridge'/>
+      <Navbar onOpen={onOpen} heading='Fridge'/>
       <FridgeLevel products={products}/>
-      <AddProduct isOpen={isOpen} onClose={onClose} btnRef={btnRef}  heading='Fridge Level' />
+      <AddProduct isOpen={isOpen} onClose={onClose} fetchProducts={fetchProducts}  heading='Fridge Level' />
     </>
 
   )

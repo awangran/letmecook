@@ -15,6 +15,7 @@ export default function Product({ product }) {
     const datein = format(dateinraw, 'MMMM do, yyyy')
     const dateoutraw = product.dateOut
     const dateout = format(dateoutraw, 'MMMM do, yyyy')
+    const id = product.id
 
     const [qualityColor, setQualityColor] = useState()
     const [stockstatus, setStock] = useState()
@@ -40,10 +41,6 @@ export default function Product({ product }) {
         
     }
 
-    
-
-
-    
 
     const calculateStock = () => {
         const stock = product.stock
@@ -65,6 +62,10 @@ export default function Product({ product }) {
         return () => clearInterval(intervalId);
     }, [dateoutraw, dateinraw]);
 
+    //handle product delete
+    
+
+    
 
 
   return (

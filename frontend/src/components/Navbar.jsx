@@ -6,7 +6,7 @@ import { MdOutlineShoppingCart } from "react-icons/md";
 import { MdAddCircleOutline } from "react-icons/md";
 
 
-export default function Navbar({ heading, onOpen, btnRef }) {
+export default function Navbar({ heading, onOpen }) {
   
 
   return (
@@ -38,7 +38,7 @@ export default function Navbar({ heading, onOpen, btnRef }) {
         </Link>
 
         <span>
-        <Icon as={MdAddCircleOutline} fontSize='35px' onClick={onOpen} ref={btnRef}
+        <Icon as={MdAddCircleOutline} fontSize='35px' onClick={onOpen}
           sx={{
             color: 'teal',
             transition: '.3s',

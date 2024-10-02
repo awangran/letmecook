@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
+
 
 import {
     Drawer,
@@ -26,7 +28,7 @@ import {
   } from '@chakra-ui/react'
 
 
-  function AddProduct({ isOpen, onClose, btnRef }) {
+  function AddProduct({ isOpen, onClose, fetchProducts }) {
     const [product, setProduct] = useState()
     const [number, setNumber] = useState()
     const [unit, setUnit] = useState()
@@ -35,16 +37,20 @@ import {
     const [type, setType] = useState()
     const [cost, setCost] = useState()
     const [stock, setStock] = useState()
+    const navigate = useNavigate();
 
-    const handleStock = () => {
+
+    const handleStock = (e) => {
+      setNumber(e.target.value)
+
       if (number > 0){
         setStock(true)
       } else {
         setStock(false)
       }
+      console.log("stock set")
     }
 
-    
 
     const quantity = {
       number: number,
@@ -52,11 +58,7 @@ import {
     };
 
 
-
-
     const handleAdd = () => {
-
-      handleStock()
       
       const data = {
         product,
@@ -69,6 +71,10 @@ import {
       };
       axios
         .post('http://localhost:5555/fridge', data)
+        .then(() => {
+          console.log("product added")
+          fetchProducts();
+        })
         .catch((err) => {
           alert('Error happened. Check console.')
           console.log(err)
@@ -105,7 +111,7 @@ import {
                     <FormLabel htmlFor='quantity'>Quantity</FormLabel>
                     <Flex gap={2}>
                         <NumberInput >
-                            <NumberInputField id='number' onChange={(e) => setNumber(e.target.value)} />
+                            <NumberInputField id='number' onChange={handleStock} />
                         </NumberInput>
                         <Select id='unit' onChange={(e) => setUnit(e.target.value)}>
                             <option value='und'>und</option>
