@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import axios from 'axios'
 import {
     Drawer,
     DrawerBody,
@@ -23,7 +24,45 @@ import {
     InputGroup
   } from '@chakra-ui/react'
 
+
   function AddProduct({ isOpen, onClose, btnRef }) {
+    const [product, setProduct] = useState()
+    const [number, setNumber] = useState()
+    const [unit, setUnit] = useState()
+    const [dateIn, setDatein] = useState()
+    const [dateOut, setDateout] = useState()
+    const [type, setType] = useState()
+    const [cost, setCost] = useState()
+
+    const quantity = {
+      number: number,
+      unit: unit
+    };
+
+    const quality = "fresh"
+    const stock = true
+
+    const handleAdd = () => {
+      const data = {
+        product,
+        quantity,
+        cost,
+        dateIn,
+        dateOut,
+        quality,
+        type,
+        stock
+      };
+      axios
+        .post('http://localhost:5555/fridge', data)
+        .catch((err) => {
+          alert('Error happened. Check console.')
+          console.log(err)
+          console.log(data)
+        });
+    };
+
+
 
   
     return (
@@ -42,28 +81,25 @@ import {
             <DrawerBody px={10}  >
               <form
               id='add-form'
-              onSubmit={(e) => {
-                e.preventDefault()
-                console.log('submitted')
-              }}
+             
               >
             
                 <Flex direction='column' my={2}>
                     <FormLabel htmlFor='product'>Product Name</FormLabel>
-                    <Input id='product' />
+                    <Input id='product' onChange={(e) => setProduct(e.target.value)}/>
                 </Flex>
 
                 <Flex direction='column' my={2}>
                     <FormLabel htmlFor='quantity'>Quantity</FormLabel>
                     <Flex gap={2}>
                         <NumberInput >
-                            <NumberInputField id='number' />
+                            <NumberInputField id='number' onChange={(e) => setNumber(e.target.value)} />
                             <NumberInputStepper>
                                 <NumberIncrementStepper />
                                 <NumberDecrementStepper />
                             </NumberInputStepper>
                         </NumberInput>
-                        <Select id='unit' defaultValue='und'>
+                        <Select id='unit' defaultValue='und' onChange={(e) => setUnit(e.target.value)}>
                             <option value='und'>und</option>
                             <option value='kg'>kg</option>
                             <option value='grams'>grams</option>
@@ -80,15 +116,15 @@ import {
 
                 <Flex direction='column' mb={2}> 
                     <FormLabel htmlFor='dateIn' my={3}>Date In</FormLabel>
-                    <Input id="dateIn" size='md' type='date'/>
+                    <Input id="dateIn" size='md' type='date' onChange={(e) => setDatein(e.target.value)}/>
 
                     <FormLabel htmlFor='dateIn' my={3}>Date Out</FormLabel>
-                    <Input id="dateOut" size='md' type='date'/>
+                    <Input id="dateOut" size='md' type='date'onChange={(e) => setDateout(e.target.value)}/>
                 </Flex>
 
                 <Flex direction='column' my={3}>
                     <FormLabel htmlFor='type'>Type</FormLabel>
-                    <Select id='type' defaultValue='protein'>
+                    <Select id='type' defaultValue='protein' onChange={(e) => setType(e.target.value)}>
                         <option value='protein'>Protein</option>
                         <option value='dairy'>Dairy</option>
                         <option value='grains'>Grains</option>
@@ -106,17 +142,14 @@ import {
                         <InputLeftElement pointerEvents='none' color='gray.300' fontSize='1.2em'>
                         $
                         </InputLeftElement>
-                        <Input type='number' />
+                        <Input type='number' onChange={(e) => setCost(e.target.value)}/>
                     </InputGroup>
 
                     
                 </Flex>
 
-
-
-
               
-              
+        
               </form>
             </DrawerBody>
   
@@ -124,7 +157,7 @@ import {
               <Button variant='outline' mr={3} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme='teal' type='submit' form='add-form'>Add</Button>
+              <Button colorScheme='teal' onClick={handleAdd}>Add</Button>
             </DrawerFooter>
           </DrawerContent>
         </Drawer>
