@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+
 import {
     Drawer,
     DrawerBody,
@@ -33,23 +34,36 @@ import {
     const [dateOut, setDateout] = useState()
     const [type, setType] = useState()
     const [cost, setCost] = useState()
+    const [stock, setStock] = useState()
+
+    const handleStock = () => {
+      if (number > 0){
+        setStock(true)
+      } else {
+        setStock(false)
+      }
+    }
+
+    
 
     const quantity = {
       number: number,
       unit: unit
     };
 
-    const quality = "fresh"
-    const stock = true
+
+
 
     const handleAdd = () => {
+
+      handleStock()
+      
       const data = {
         product,
         quantity,
         cost,
         dateIn,
         dateOut,
-        quality,
         type,
         stock
       };
@@ -63,8 +77,6 @@ import {
     };
 
 
-
-  
     return (
       <>
         
@@ -94,12 +106,8 @@ import {
                     <Flex gap={2}>
                         <NumberInput >
                             <NumberInputField id='number' onChange={(e) => setNumber(e.target.value)} />
-                            <NumberInputStepper>
-                                <NumberIncrementStepper />
-                                <NumberDecrementStepper />
-                            </NumberInputStepper>
                         </NumberInput>
-                        <Select id='unit' defaultValue='und' onChange={(e) => setUnit(e.target.value)}>
+                        <Select id='unit' onChange={(e) => setUnit(e.target.value)}>
                             <option value='und'>und</option>
                             <option value='kg'>kg</option>
                             <option value='grams'>grams</option>
@@ -119,12 +127,12 @@ import {
                     <Input id="dateIn" size='md' type='date' onChange={(e) => setDatein(e.target.value)}/>
 
                     <FormLabel htmlFor='dateIn' my={3}>Date Out</FormLabel>
-                    <Input id="dateOut" size='md' type='date'onChange={(e) => setDateout(e.target.value)}/>
+                    <Input id="dateOut" size='md' type='date' onChange={(e) => setDateout(e.target.value)}/>
                 </Flex>
 
                 <Flex direction='column' my={3}>
                     <FormLabel htmlFor='type'>Type</FormLabel>
-                    <Select id='type' defaultValue='protein' onChange={(e) => setType(e.target.value)}>
+                    <Select id='type' onChange={(e) => setType(e.target.value)}>
                         <option value='protein'>Protein</option>
                         <option value='dairy'>Dairy</option>
                         <option value='grains'>Grains</option>
