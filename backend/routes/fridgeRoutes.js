@@ -28,6 +28,7 @@ fridgeRouter.post('/', async(req,res)=>{
             cost: req.body.cost,
             dateIn: req.body.dateIn,
             dateOut: req.body.dateOut,
+            quality: req.body.quality,
             type: req.body.type,
             stock: req.body.stock,
         };
@@ -91,7 +92,7 @@ fridgeRouter.put('/:id', async (req,res) => {
         const result = await Product.findByIdAndUpdate(id, req.body);
 
         if (!result) {
-            return res.status(404).json({ message: 'product not found'})
+            return res.status(404).json({ message: 'book not found'})
         }
         return res.status(200).send({message: "done"})
 

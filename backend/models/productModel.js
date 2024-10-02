@@ -23,6 +23,10 @@ const productSchema = new Schema({
         type: Date,
         required: true
     },
+    quality: {
+        type: String,
+        required: true
+    },
     type: {
         type: String,
         required: true
