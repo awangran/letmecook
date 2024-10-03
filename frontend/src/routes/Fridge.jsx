@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import FridgeLevel from '../components/FridgeLevel'
 import AddProduct from '../components/AddProduct'
+import EditProduct from '../components/EditProduct'
 import { useDisclosure } from '@chakra-ui/react'
 import axios from 'axios'
 
@@ -30,8 +31,9 @@ function Fridge() {
   return (
     <>
       <Navbar onOpen={onOpen} heading='Fridge'/>
-      <FridgeLevel products={products}/>
+      <FridgeLevel products={products} fetchProducts={fetchProducts}/>
       <AddProduct isOpen={isOpen} onClose={onClose} fetchProducts={fetchProducts}  heading='Fridge Level' />
+
     </>
 
   )

@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
 
 
 import {
@@ -28,36 +27,62 @@ import {
   } from '@chakra-ui/react'
 
 
-  function AddProduct({ isOpen, onClose, fetchProducts }) {
+  function EditProduct({ isOpen, onClose, fetchProducts, id }) {
+    
     const [product, setProduct] = useState()
     const [number, setNumber] = useState()
-    const [unit, setUnit] = useState('und')
+    const [unit, setUnit] = useState()
     const [dateIn, setDatein] = useState()
     const [dateOut, setDateout] = useState()
-    const [type, setType] = useState('Protein')
+    const [type, setType] = useState()
     const [cost, setCost] = useState()
     const [stock, setStock] = useState()
-  
-
 
     const quantity = {
-      number: number,
-      unit: unit
-    };
+        number: number,
+        unit: unit
+      };
+    
 
+
+    //fetch product data
     useEffect(() => {
-      if (number > 0){
-          setStock(true)
-        } else {
-          setStock(false)
-        }
+        axios.get(`http://localhost:5555/fridge/${id}`)
+        .then((res) => {
+            setProduct(res.data.product);
+            setNumber(res.data.quantity.number);
+            setUnit(res.data.quantity.unit)
+            setDatein(res.data.dateIn);
+            setDateout(res.data.dateOut);
+            setType(res.data.type);
+            setCost(res.data.cost);
 
-    }, [number])
+          })
+          .catch((error) => {
+            alert('An error happened. Please Check console');
+            console.log(error);
+          });
+      }, [])
+
+      //set stock each time number changes. works but window needs to reload to see the change in stock
+      useEffect(() => {
+        if (number > 0){
+            setStock(true)
+          } else {
+            setStock(false)
+          }
+
+      }, [number])
+      
+      
+      
+      
 
 
-    const handleAdd = () => {
 
-      const data = {
+    const handleEdit = () => {
+          
+        const data = {
         product,
         quantity,
         cost,
@@ -65,17 +90,17 @@ import {
         dateOut,
         type,
         stock
-      };
-      axios
-        .post('http://localhost:5555/fridge', data)
+        };
+        axios
+        .put(`http://localhost:5555/fridge/${id}`, data)
         .then(() => {
-          console.log("product added")
-          fetchProducts();
+            console.log("product editted")
+            fetchProducts();
         })
         .catch((err) => {
-          alert('Error happened. Check console.')
-          console.log(err)
-          console.log(data)
+            alert('Error happened. Check console.')
+            console.log(err)
+            console.log(data)
         });
     };
 
@@ -91,26 +116,25 @@ import {
           <DrawerOverlay />
           <DrawerContent>
             <DrawerCloseButton />
-            <DrawerHeader color='teal'>Add Product</DrawerHeader>
+            <DrawerHeader color='teal'>Edit Product</DrawerHeader>
   
             <DrawerBody px={10}  >
               <form
               id='add-form'
-             
               >
             
                 <Flex direction='column' my={2}>
                     <FormLabel htmlFor='product'>Product Name</FormLabel>
-                    <Input id='product' onChange={(e) => setProduct(e.target.value)}/>
+                    <Input placeholder={product} id='product' onChange={(e) => setProduct(e.target.value)}/>
                 </Flex>
 
                 <Flex direction='column' my={2}>
                     <FormLabel htmlFor='quantity'>Quantity</FormLabel>
                     <Flex gap={2}>
                         <NumberInput >
-                            <NumberInputField id='number' onChange={(e) => setNumber(e.target.value)} />
+                            <NumberInputField placeholder={number} id='number' onChange={(e) => setNumber(e.target.value)} />
                         </NumberInput>
-                        <Select id='unit' onChange={(e) => setUnit(e.target.value)}>
+                        <Select placeholder={unit} id='unit' onChange={(e) => setUnit(e.target.value)}>
                             <option value='und'>und</option>
                             <option value='kg'>kg</option>
                             <option value='grams'>grams</option>
@@ -127,15 +151,15 @@ import {
 
                 <Flex direction='column' mb={2}> 
                     <FormLabel htmlFor='dateIn' my={3}>Date In</FormLabel>
-                    <Input id="dateIn" size='md' type='date' onChange={(e) => setDatein(e.target.value)}/>
+                    <Input placeholder={dateIn} id="dateIn" size='md' type='date' onChange={(e) => setDatein(e.target.value)}/>
 
-                    <FormLabel htmlFor='dateIn' my={3}>Date Out</FormLabel>
-                    <Input id="dateOut" size='md' type='date' onChange={(e) => setDateout(e.target.value)}/>
+                    <FormLabel htmlFor='dateOut' my={3}>Date Out</FormLabel>
+                    <Input placeholder={dateOut} id="dateOut" size='md' type='date' onChange={(e) => setDateout(e.target.value)}/>
                 </Flex>
 
                 <Flex direction='column' my={3}>
                     <FormLabel htmlFor='type'>Type</FormLabel>
-                    <Select id='type' onChange={(e) => setType(e.target.value)}>
+                    <Select placeholder={type} id='type' onChange={(e) => setType(e.target.value)}>
                         <option value='protein'>Protein</option>
                         <option value='dairy'>Dairy</option>
                         <option value='grains'>Grains</option>
@@ -153,7 +177,7 @@ import {
                         <InputLeftElement pointerEvents='none' color='gray.300' fontSize='1.2em'>
                         $
                         </InputLeftElement>
-                        <Input type='number' onChange={(e) => setCost(e.target.value)}/>
+                        <Input placeholder={cost} type='number' onChange={(e) => setCost(e.target.value)}/>
                     </InputGroup>
 
                     
@@ -168,7 +192,7 @@ import {
               <Button variant='outline' mr={3} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme='teal' onClick={handleAdd}>Add</Button>
+              <Button colorScheme='teal' onClick={handleEdit}>Save</Button>
             </DrawerFooter>
           </DrawerContent>
         </Drawer>
@@ -176,4 +200,4 @@ import {
     )
   }
 
-export default AddProduct
+export default EditProduct

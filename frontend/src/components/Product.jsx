@@ -2,23 +2,27 @@ import React, { useEffect, useState } from 'react'
 import { GiPlainCircle } from "react-icons/gi";
 import { MdEdit } from "react-icons/md";
 import { FiTrash } from "react-icons/fi";
-import { Box, Text, Flex } from '@chakra-ui/react'
+import { Box, Text, Flex, useDisclosure } from '@chakra-ui/react'
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { format } from 'date-fns';
 import { differenceInDays } from 'date-fns';
+import axios from 'axios';
+import EditProduct from './EditProduct';
 
+export default function Product({ product, fetchProducts }) {
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
-export default function Product({ product }) {
     //formatting date
     const [show, setShow] = useState(false);
     const dateinraw = product.dateIn
     const datein = format(dateinraw, 'MMMM do, yyyy')
     const dateoutraw = product.dateOut
     const dateout = format(dateoutraw, 'MMMM do, yyyy')
-    const id = product.id
+    const id = product._id
 
     const [qualityColor, setQualityColor] = useState()
     const [stockstatus, setStock] = useState()
+
 
 
     //calculating quality
@@ -63,12 +67,27 @@ export default function Product({ product }) {
     }, [dateoutraw, dateinraw]);
 
     //handle product delete
-    
+    const handleDelete = () => {
+        console.log(id)
 
+        axios
+        .delete(`http://localhost:5555/fridge/${id}`)
+        .then(() => {
+            console.log("product deleted")
+            fetchProducts();
+        })
+        .catch((error) => {
+            alert('An error happened. Please Check console');
+            console.log(error);
+        });
+    }
+
+ 
     
 
 
   return (
+    <>
     <Box p={2} border='2px' borderColor='teal' width='230px' borderRadius='10px'>
         <Flex alignItems='center' justifyContent='space-between' onClick={()=> setShow(!show)}>
             <Text fontWeight='600'>{product.product}</Text> 
@@ -97,11 +116,13 @@ export default function Product({ product }) {
 
             <Flex gap={2}>
                 <MdOutlineAddShoppingCart />
-                <MdEdit/>
-                <FiTrash/>
+                <MdEdit onClick={onOpen}/>
+                <FiTrash onClick={handleDelete}/>
             </Flex>
 
         </Flex>
     </Box>
+    <EditProduct isOpen={isOpen} onClose={onClose} fetchProducts={fetchProducts} id={id} />
+    </>
   )
 }

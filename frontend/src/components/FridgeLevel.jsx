@@ -2,14 +2,14 @@ import React from 'react'
 import { SimpleGrid, Box, Heading} from '@chakra-ui/react'
 import Product from './Product'
 
-function FridgeLevel({ products }) {
+function FridgeLevel({ products, fetchProducts }) {
   return (
         <Box px={20}>
                 <Heading fontSize='30px' my={8} color='teal'></Heading>
 
                 <SimpleGrid minChildWidth='200px' spacing={10}>
                 {products.map((item)=>(
-                    <Product key={item._id} product={item}/>
+                    <Product key={item._id} product={item} fetchProducts={fetchProducts}/>
                 ))}
                 </SimpleGrid>
             </Box>
