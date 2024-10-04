@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { GiPlainCircle } from "react-icons/gi";
 import { MdEdit } from "react-icons/md";
 import { FiTrash } from "react-icons/fi";
-import { Box, Text, Flex, useDisclosure } from '@chakra-ui/react'
+import { Box, Text, Flex, useDisclosure, Icon } from '@chakra-ui/react'
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { format } from 'date-fns';
 import { differenceInDays } from 'date-fns';
@@ -115,9 +115,25 @@ export default function Product({ product, fetchProducts }) {
             </Flex>
 
             <Flex gap={2}>
-                <MdOutlineAddShoppingCart />
-                <MdEdit onClick={onOpen}/>
-                <FiTrash onClick={handleDelete}/>
+            <Icon as={MdOutlineAddShoppingCart} sx={{
+                color: 'grey',
+                transition: '.3s',
+                _hover: { color: 'teal.400', cursor: 'pointer'  },  // Hover styles
+            }} />
+                <Icon as={MdEdit} onClick={onOpen}
+                sx={{
+                    color: 'grey',
+                    transition: '.3s',
+                    _hover: { color: 'teal.400', cursor: 'pointer'  },  // Hover styles
+                }}
+                />
+                <Icon as={FiTrash} onClick={handleDelete}
+                sx={{
+                    color: 'grey',
+                    transition: '.3s',
+                    _hover: { color: 'teal.400', cursor: 'pointer'  },  // Hover styles
+                }}
+                />
             </Flex>
 
         </Flex>
