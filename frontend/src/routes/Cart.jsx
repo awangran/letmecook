@@ -1,13 +1,9 @@
 import React from 'react'
-import Navbar from '../components/Navbar'
 
-function Cart() {
+export default function Cart() {
   return (
-    <>
-      <Navbar heading='Cart'/>
-    </>
-
+    <div>
+      cart
+    </div>
   )
 }
-
-export default Cart

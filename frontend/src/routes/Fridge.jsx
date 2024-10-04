@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
-import FridgeLevel from '../components/FridgeLevel'
-import AddProduct from '../components/AddProduct'
-import EditProduct from '../components/EditProduct'
+import FridgeLevel from '../components/product/FridgeLevel'
+import AddProduct from '../components/product/AddProduct'
+import EditProduct from '../components/product/EditProduct'
 import { useDisclosure } from '@chakra-ui/react'
 import axios from 'axios'
 
