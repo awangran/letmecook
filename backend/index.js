@@ -3,6 +3,7 @@ import { mongoDBURL, PORT } from "./config.js"
 import mongoose from 'mongoose'
 import { Product } from "./models/productModel.js";
 import fridgeRoutes from './routes/fridgeRoutes.js';
+import recipeRoutes from './routes/recipeRoutes.js'
 import cors from 'cors';
 
 const app = express();
@@ -19,7 +20,9 @@ app.get('/', (req,res) => {
     return res.status(234).send('Here')
 })
 
+//use routes
 app.use('/fridge', fridgeRoutes)
+app.use('/recipes', recipeRoutes)
 
 mongoose
     .connect(mongoDBURL)
