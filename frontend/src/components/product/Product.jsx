@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import useLocalStorageState from 'use-local-storage-state'
 import { GiPlainCircle } from "react-icons/gi";
 import { MdEdit } from "react-icons/md";
 import { FiTrash } from "react-icons/fi";
@@ -82,7 +83,36 @@ export default function Product({ product, fetchProducts }) {
         });
     }
 
- 
+    //handle add to cart to local storage
+    const [cart, setCart] = useState([])
+
+    const addToCart = () => {
+
+        let cartProduct = {
+            id: product._id,
+            name: product.product,
+            quantity: 1,
+            unit: product.quantity.unit,
+            cost: product.cost,
+            total: product.cost,
+        }
+
+        let cartArray = JSON.parse(localStorage.getItem('cartArray'));
+
+        if (cartArray !== null){
+            const result = cartArray.find(element => element.id === cartProduct.id)
+            if (result == undefined) {
+                cartArray.push(cartProduct);
+                localStorage.setItem("cartArray", JSON.stringify(cartArray));
+            }
+           
+        } else {
+            localStorage.setItem("cartArray", JSON.stringify([cartProduct]));
+        }
+        
+      }
+    
+
     
 
 
@@ -115,7 +145,8 @@ export default function Product({ product, fetchProducts }) {
             </Flex>
 
             <Flex gap={2}>
-            <Icon as={MdOutlineAddShoppingCart} sx={{
+            <Icon as={MdOutlineAddShoppingCart}  onClick={() => addToCart(product)}
+                sx={{
                 color: 'grey',
                 transition: '.3s',
                 _hover: { color: 'teal.400', cursor: 'pointer'  },  // Hover styles
@@ -139,6 +170,7 @@ export default function Product({ product, fetchProducts }) {
         </Flex>
     </Box>
     <EditProduct isOpen={isOpen} onClose={onClose} fetchProducts={fetchProducts} id={id} />
+    
     </>
   )
 }
