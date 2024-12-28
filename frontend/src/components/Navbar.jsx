@@ -46,9 +46,7 @@ export default function Navbar({ heading, onOpen }) {
         }}
         />     
         </span>
-
         
-
       </Flex>
   )
 }

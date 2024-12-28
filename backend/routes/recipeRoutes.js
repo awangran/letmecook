@@ -19,6 +19,7 @@ recipeRouter.post('/', async(req,res)=>{
         const newRecipe = {
             name: req.body.name,
             type: req.body.type,
+            time: req.body.time,
             ingredients: req.body.ingredients,
             servings: req.body.servings,
             link: req.body.link,
@@ -51,10 +52,11 @@ recipeRouter.get('/', async (req,res) =>{
         res.status(500).send({ message: err.message })
     }
 });
-
+/* 
+//TODO fix the next two routes
 
 //route for update product
-fridgeRouter.put('/:id', async (req,res) => {
+recipeRouter.put('/:id', async (req,res) => {
     try {
         if (
             !req.body.product ||
@@ -82,7 +84,6 @@ fridgeRouter.put('/:id', async (req,res) => {
 })
 
 
-//TODO fix the next two routes
 //route to delete recipes
 
 fridgeRouter.delete('/:id', async (req,res) => {
@@ -100,6 +101,6 @@ fridgeRouter.delete('/:id', async (req,res) => {
         res.status(500).send({ message: err.message });
     }
 });
-
+ */
 
 export default recipeRouter;
