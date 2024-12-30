@@ -8,9 +8,7 @@ import axios from 'axios';
 
 
 function AddRecipe() {
-    const [products, setProducts] = useState();
-    const [filteredproducts, setFilteredproducts] = useState([]);
-
+    const [products, setProducts] = useState([]);
     const [ingredients, setIngredients] = useState([])
     const [iname, setIname] = useState('')
     const [inumber, setInumber] = useState(0)
@@ -19,9 +17,9 @@ function AddRecipe() {
     const tags = [
         "western", "asian", "sweet", "salty", "spicy", "sour", "umami", "colombian", "italian", "mexican", "chinese", "japanese", "indian", "thai", "vietnamese", "korean", "mediterranean", "middle eastern", "american", "vegan", "vegetarian", "dairy-free", "organic", "high-protein", "grilled", "fried", "baked", "roasted", "steamed", "raw", "seafood", "meat", "poultry", "dessert", "snack", "appetizer", "fast food", "comfort food", "gourmet", "fusion", "traditional"
     ]
+
     const [inputValue, setInputValue] = useState("");
-   
-    const [filteredOptions, setFilteredOptions] = useState(filteredproducts);
+    const [filteredInput, setFilteredInput] = useState(products);
     const [isOpen, setIsOpen] = useState(false);
 
     
@@ -32,28 +30,27 @@ function AddRecipe() {
         axios
           .get('http://localhost:5555/fridge')
           .then((res) => {
-            setProducts(res.data.data);
-            filterProducts();
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      };
+            const products = res.data.data
+            //filter into only product name array
+            setProducts(products.map((obj) => obj.product));
 
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+            
+
+        
+      };
+     
     // Fetch products when the component mounts
+ 
+    
     useEffect(() => {
         fetchProducts();
     }, []);
 
-    //filter product names and non expired
-    const filterProducts = () => {
-        const today = new Date();
-        const filtered = products
-            .filter(obj => differenceInDays(obj.dateOut, obj.dateIn) - differenceInDays(obj.dateOut, today) > 0)
-            .map(obj => obj.product);
-        setFilteredproducts(filtered)
-    }
-
+   
     //handle add ingredient field
     const addIngredientField = () => {
         setIngredients(
@@ -79,27 +76,26 @@ function AddRecipe() {
             ? prev.filter((t) => t !== tag)
             : [...prev, tag]
         );
+        
     }
 
     //function for ingredient suggestions
     const handleInputChange = (e) => {
         const value = e.target.value;
         setInputValue(value);
-        setFilteredOptions(
-          options.filter((option) =>
-            option.toLowerCase().includes(value.toLowerCase())
+        setIname(value)
+        setFilteredInput(
+          products.filter((product) =>
+            product.toLowerCase().includes(value.toLowerCase())
           )
         );
         setIsOpen(true);
-        setIname(value)
-
-        filterProducts();
-
       };
-
+    
       const handleOptionClick = (option) => {
         setInputValue(option);
         setIsOpen(false);
+        setIname(option)
       };
     
       const handleBlur = () => {
@@ -176,17 +172,17 @@ function AddRecipe() {
                     
                 <Flex direction='row' alignItems='center' gap={2} marginBottom={4}>
                  <Box position="relative" >
-                    <Input
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        onFocus={() => setIsOpen(true)}
-                        onBlur={handleBlur}
-                        id="" size='sm' width={20} type='text' borderRadius={5} backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray.100'
-                    />
+                 <Input
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onFocus={() => setIsOpen(true)}
+                    onBlur={handleBlur}
+                />
+                    
                     {isOpen && (
                         <List
                         position="absolute"
-                        width="fit-content%"
+                        width="fit-content"
                         bg="white"
                         border="1px solid"
                         borderColor="gray.200"
@@ -196,16 +192,16 @@ function AddRecipe() {
                         zIndex="10"
                         mt={2}
                         >
-                        {filteredOptions.map((option, index) => (
+                        {filteredInput.map((item) => (
                             <ListItem
-                            key={index}
+                            key={item}
                             px={4}
                             py={2}
                             cursor="pointer"
                             _hover={{ bg: "gray.100" }}
-                            onClick={() => handleOptionClick(option)}
+                            onClick={() => handleOptionClick(item)}
                             >
-                            {option}
+                            {item}
                             </ListItem>
                         ))}
                         </List>
