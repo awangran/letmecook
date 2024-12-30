@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import Recipe from '../components/recipe/Recipe'
-import { Flex } from '@chakra-ui/react'
+import { Flex, Text, useDisclosure } from '@chakra-ui/react'
 import axios from 'axios'
 import AddRecipe from '../components/recipe/AddRecipe'
+
 
 function Recipes() {
 
   const [recipes, setRecipes] = useState([])
   // Fetch recipes from the API
-  const fetchProducts = () => {
+  const fetchRecipes = () => {
     axios
       .get('http://localhost:5555/recipes')
       .then((res) => {
@@ -22,13 +23,19 @@ function Recipes() {
 
   // Fetch recipes when the component mounts
   useEffect(() => {
-    fetchProducts();
+    fetchRecipes();
   }, []);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleOpen = () => setIsOpen(!isOpen);
+
 
   return (
     <>
     
       <Navbar heading='Recipes'/>
+      <Text onClick={toggleOpen}>open</Text>
       <Flex 
       wrap="wrap" 
       gap={6} 
@@ -40,7 +47,10 @@ function Recipes() {
         ))}
        
       </Flex>
-      <AddRecipe/>
+      {isOpen && (
+        <AddRecipe fetchRecipes={fetchRecipes} toggleOpen={toggleOpen} isOpen={isOpen} />
+      )}
+      
     </>
   )
 }

@@ -1,26 +1,42 @@
-import { Box, Button, Checkbox, Flex, FormLabel, Heading, Icon, IconButton, Img, Input, InputGroup, List, ListItem, Select, Spacer, Stack, Text, UnorderedList } from '@chakra-ui/react'
+import { Box, Button, Checkbox, Flex, FormLabel, Heading, Icon, IconButton, Img, Input, InputGroup, List, ListItem, Modal, ModalContent, ModalOverlay, Select, Spacer, Stack, Text, Textarea, UnorderedList } from '@chakra-ui/react'
 import React from 'react'
 import { FiTrash } from "react-icons/fi";
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { differenceInDays } from 'date-fns';
 import axios from 'axios';
+import { IoClose } from "react-icons/io5";
 
 
-function AddRecipe() {
+function AddRecipe({fetchRecipes, toggleOpen}) {
     const [products, setProducts] = useState([]);
+    
+    const tags = [
+        "western", "asian", "sweet", "salty", "spicy", "sour", "umami", "colombian", "italian", "mexican", "chinese", "japanese", "indian", "thai", "vietnamese", "korean", "mediterranean", "middle eastern", "american", "vegan", "vegetarian", "dairy-free", "organic", "high-protein", "grilled", "fried", "baked", "roasted", "steamed", "raw", "seafood", "meat", "poultry", "dessert", "snack", "appetizer", "fast food", "comfort food", "gourmet", "fusion", "traditional"
+    ]
+    const units = [
+        "unit", "teaspoon", "tablespoon", "cup", "ounce", "pound", "gram", "kilogram", "milliliter", "liter", "pinch", "dash", "quart", "gallon", "sheet", "bottle", "slice"
+    ]
+    const [inputValue, setInputValue] = useState("");
+    const [filteredInput, setFilteredInput] = useState(products);
+    const [isOpen2, setIsOpen2] = useState(false);
+
+    //variables for input fields
+    const [name, setName] = useState('')
+    const [type, setType] = useState([])
+    const [link, setLink] = useState('')
+    const [servings, setServings] = useState(0)
+    const [ptime, setPtime] = useState(0)
+    const [ctime, setCtime] = useState(0)
+    const [ttime, setTtime] = useState(0)
     const [ingredients, setIngredients] = useState([])
     const [iname, setIname] = useState('')
     const [inumber, setInumber] = useState(0)
     const [iunit, setIunit] = useState('unit')
     const [selectedTags, setSelectedtags] = useState([])
-    const tags = [
-        "western", "asian", "sweet", "salty", "spicy", "sour", "umami", "colombian", "italian", "mexican", "chinese", "japanese", "indian", "thai", "vietnamese", "korean", "mediterranean", "middle eastern", "american", "vegan", "vegetarian", "dairy-free", "organic", "high-protein", "grilled", "fried", "baked", "roasted", "steamed", "raw", "seafood", "meat", "poultry", "dessert", "snack", "appetizer", "fast food", "comfort food", "gourmet", "fusion", "traditional"
-    ]
+    const [image, setImage] = useState('')
+    const [notes, setNotes] = useState('')
 
-    const [inputValue, setInputValue] = useState("");
-    const [filteredInput, setFilteredInput] = useState(products);
-    const [isOpen, setIsOpen] = useState(false);
 
     
 
@@ -38,14 +54,10 @@ function AddRecipe() {
             .catch((err) => {
                 console.log(err);
             });
-            
 
-        
       };
      
     // Fetch products when the component mounts
- 
-    
     useEffect(() => {
         fetchProducts();
     }, []);
@@ -69,6 +81,18 @@ function AddRecipe() {
     
     }
 
+    //handle type of recipe array
+    const handleType = (e) =>{
+        const { value, checked } = e.target;
+
+        if (checked) {
+        setType((prev) => [...prev, value]);
+        } else {
+        setType((prev) => prev.filter((item) => item !== value));
+        }
+    }
+
+
     //handle tag buttons clicked
     const handleTags = (tag) => {
         setSelectedtags((prev) =>
@@ -89,22 +113,56 @@ function AddRecipe() {
             product.toLowerCase().includes(value.toLowerCase())
           )
         );
-        setIsOpen(true);
+        setIsOpen2(true);
       };
     
       const handleOptionClick = (option) => {
         setInputValue(option);
-        setIsOpen(false);
+        setIsOpen2(false);
         setIname(option)
       };
     
       const handleBlur = () => {
-        setTimeout(() => setIsOpen(false), 100); // Delay to allow option selection
+        setTimeout(() => setIsOpen2(false), 100); // Delay to allow option selection
+      };
+
+      //handle submit recipe button
+      const time = {
+        ptime: ptime,
+        ctime: ctime,
+        ttime: ttime
+      };
+
+      const handleSubmit = () => {
+
+        const data = {
+          name,
+          type,
+          time,
+          ingredients,
+          servings,
+          link,
+          selectedTags,
+          image,
+          notes
+        };
+        axios
+          .post('http://localhost:5555/recipes', data)
+          .then(() => {
+            console.log("recipe added")
+            fetchRecipes();
+          })
+          .catch((err) => {
+            alert('Error happened. Check console.')
+            console.log(err)
+            console.log(data)
+          });
       };
 
 
   return (
     <>
+    
     <Flex width='100%' 
     height='100vh' 
     position='absolute' 
@@ -113,7 +171,10 @@ function AddRecipe() {
     direction='column'
     px={20}
     py={5}
+    toggleOpen = {toggleOpen}
     >
+        <Flex justifyContent='flex-end' ><IoClose color='teal' fontSize={30} onClick={toggleOpen}/></Flex>
+        
         <Heading textAlign='center' margin={6} color='teal' >Add Recipe</Heading>
         <Flex className='col-container' direction='row' gap={6} >
             <Box width='25%'>
@@ -126,27 +187,16 @@ function AddRecipe() {
                 >
             </Img>
            
-                <FormLabel htmlFor='dateIn' my={3} color='teal' fontWeight='bold'>Name</FormLabel>
-                <Input id="dateIn" size='md' type='text' backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
+                <FormLabel htmlFor='name' my={3} color='teal' fontWeight='bold'>Name</FormLabel>
+                <Input id="name" size='md' type='text' onChange={(e) => {setName(e.target.value)}}  backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
 
-                <FormLabel htmlFor='dateIn' my={3} color='teal' fontWeight='bold'>Type</FormLabel>
-                <Stack spacing={[1, 5]} direction={['column', 'column']} color='gray.600'>
-                    <Checkbox size='lg' colorScheme='teal'>
-                        Breakfast
-                    </Checkbox>
-                    <Checkbox size='lg' colorScheme='teal'>
-                        Lunch
-                    </Checkbox>
-                    <Checkbox size='lg' colorScheme='teal' >
-                        Dinner
-                    </Checkbox>
-                    <Checkbox size='lg' colorScheme='teal' >
-                        Snack
-                    </Checkbox>
-                    <Checkbox size='lg' colorScheme='teal'>
-                        Dessert
-                    </Checkbox>
-                    </Stack>
+                <FormLabel htmlFor='name' my={3} color='teal' fontWeight='bold'>Link</FormLabel>
+                <Input id="link" size='md' type='text' onChange={(e) => {setLink(e.target.value)}}  backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
+
+                <FormLabel htmlFor='name' my={3} color='teal' fontWeight='bold'>Servings</FormLabel>
+                <Input id="servings" size='md' type='number' onChange={(e) => {setServings(e.target.value)}}  backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
+
+                
 
             </Box>
             <Spacer/>
@@ -154,14 +204,37 @@ function AddRecipe() {
             <Box width='25%'>
                 <Stack spacing={2} border='solid' borderWidth='thin' p={4} borderRadius={5} borderColor='gray.100'>
                     <Text color='teal' fontWeight='bold'>Time</Text>
-                    <FormLabel htmlFor='dateIn' my={3} color='gray.600' >Prep time</FormLabel>
-                    <Input id="dateIn" size='sm' width={20} type='text' backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
-                    
-                    <FormLabel htmlFor='dateIn' my={3} color='gray.600'>Cooking time</FormLabel>
-                    <Input id="dateIn" size='sm' width={20} type='text' backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
+                    <Flex alignItems='center' justifyContent='space-between'>
+                        <FormLabel htmlFor='preptime' my={3} color='gray.600' >Prep time</FormLabel>
+                        <Input id="preptime" size='sm' borderRadius={6}  onClick={(e) => {setPtime(e.target.value)}} width={20} type='number' backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
+                    </Flex>
+                    <Flex alignItems='center' justifyContent='space-between'>
+                        <FormLabel htmlFor='cookingtime' my={3} color='gray.600'>Cooking time</FormLabel>
+                        <Input id="cookingtime" size='sm' borderRadius={6}  onClick={(e) => {setCtime(e.target.value)}} width={20} type='number' backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
+                    </Flex>
+                    <Flex alignItems='center' justifyContent='space-between'>
+                        <FormLabel htmlFor='totaltime' my={3} color='gray.600' >Total time</FormLabel>
+                        <Input id="totaltime" size='sm' borderRadius={6}  onClick={(e) => {setTtime(e.target.value)}} width={20} type='number' backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
+                    </Flex>
+                </Stack>
 
-                    <FormLabel htmlFor='dateIn' my={3} color='gray.600' >Total time</FormLabel>
-                    <Input id="dateIn" size='sm' width={20} type='text' backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
+                <FormLabel htmlFor='type' my={3} px={4} color='teal' fontWeight='bold'>Type</FormLabel>
+                <Stack spacing={[1, 5]} px={4} direction={['column', 'column']} color='gray.600'>
+                    <Checkbox size='lg' colorScheme='teal' value='breakfast' onChange={(e) => {handleType(e)}}>
+                        Breakfast
+                    </Checkbox>
+                    <Checkbox size='lg' colorScheme='teal'  value='lunch' onChange={(e) => {handleType(e)}}>
+                        Lunch
+                    </Checkbox>
+                    <Checkbox size='lg' colorScheme='teal'   value='dinner' onChange={(e) => {handleType(e)}}>
+                        Dinner
+                    </Checkbox>
+                    <Checkbox size='lg' colorScheme='teal'  value='snack' onChange={(e) => {handleType(e)}}>
+                        Snack
+                    </Checkbox>
+                    <Checkbox size='lg' colorScheme='teal'  value='dessert' onChange={(e) => {handleType(e)}}>
+                        Dessert
+                    </Checkbox>
                 </Stack>
             </Box>
             <Spacer/>
@@ -175,11 +248,11 @@ function AddRecipe() {
                  <Input
                     value={inputValue}
                     onChange={handleInputChange}
-                    onFocus={() => setIsOpen(true)}
+                    onFocus={() => setIsOpen2(true)}
                     onBlur={handleBlur}
                 />
                     
-                    {isOpen && (
+                    {isOpen2 && (
                         <List
                         position="absolute"
                         width="fit-content"
@@ -211,23 +284,11 @@ function AddRecipe() {
                     onChange={(e) => {setInumber(e.target.value)}}
                     />
                     <Select size='sm' width={20} placeholder='' color='gray.600' onChange={(e) => {setIunit(e.target.value)}}>
-                        <option value='unit'>Units</option>
-                        <option value='teaspoon'>Teaspoon</option>
-                        <option value='tablespoon'>Tablespoon</option>
-                        <option value='cup'>Cup</option>
-                        <option value='ounce'>Ounce</option>
-                        <option value='pound'>Pound</option>
-                        <option value='gram'>Gram</option>
-                        <option value='kilogram'>Kilogram</option>
-                        <option value='milliliter'>Milliliter</option>
-                        <option value='liter'>Liter</option>
-                        <option value='pinch'>Pinch</option>
-                        <option value='dash'>Dash</option>
-                        <option value='quart'>Quart</option>
-                        <option value='gallon'>Gallon</option>
-                        <option value='sheet'>Sheet</option>
-                        <option value='bottle'>Bottle</option>
-                        <option value='slice'>Slice</option>
+                        {
+                            units.map((unit) => (
+                                <option value={unit}>{unit}</option>
+                            ))
+                        }
                     </Select>
                     <Button size='sm' colorScheme='teal' onClick={() => {addIngredientField()}} >+</Button>
                 </Flex>
@@ -245,14 +306,14 @@ function AddRecipe() {
                     </>
                 ))}
                 </UnorderedList>
-                                
 
-
-
-
-                
+                <Box>
+                <FormLabel htmlFor='notes' my={3} px={4} color='teal' fontWeight='bold'>Notes</FormLabel>
+                <Textarea resize='vertical' size='md' onChange={(e) => {setNotes(e.target.value)}}> </Textarea>
+                </Box>
 
             </Box>
+
             <Spacer/>
             <Box width='25%'>
                 <Text color='teal' fontWeight='bold' mb={4}>Tags</Text>
@@ -268,8 +329,10 @@ function AddRecipe() {
 
             </Box>
         </Flex>
-
+        <Button colorScheme='teal' width='fit-content' px={4} alignSelf='center' onClick={() => {handleSubmit()}}>Submit</Button>
     </Flex>
+  
+
     </>
   )
 }

@@ -4,7 +4,6 @@ import { Recipe } from '../models/recipeModel.js'
 const recipeRouter = express.Router();
 
 //route to save a recipe
-//route save product
 recipeRouter.post('/', async(req,res)=>{
     try {
         if (
