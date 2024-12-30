@@ -11,13 +11,17 @@ function Recipe({recipe}) {
     const tags = recipe.tags
     const ingredients = recipe.ingredients
     const times = recipe.time
+    console.log(recipe)
+
+    //function for calculating if able to make
+  
 
 
   return (
     <>
     
 
-    <Flex margin={2} p={4} border='solid' borderRadius='10px' borderColor='teal' width='fit-content'>
+    <Flex margin={2} p={4} border='solid' borderRadius='10px' borderColor='teal' width='fit-content' height='fit-content' >
         <HStack>
             <Flex>
                 <Img 
@@ -35,7 +39,7 @@ function Recipe({recipe}) {
                     <Text fontWeight='600' fontSize='xl' color='teal'>{recipe.name}</Text>
                     <GiPlainCircle color='green' />
                 </Flex>
-                <Text>Time: {times[2]}</Text>
+                <Text>Time: {times[2]} min</Text>
                 <Flex gap={2} direction='row' my={2}>
                     {tags.map((tag) => (
                          <Badge colorScheme='teal'>{tag}</Badge>
@@ -54,8 +58,15 @@ function Recipe({recipe}) {
 
     {show && (
         <> 
-        <Flex width='100%' height='100%' justifyContent='center' >
-        <Flex width='fit-content' height='fit-content' boxShadow='12px 12px 2px 1px teal' p={10} direction='column' position='absolute' top='25%' backgroundColor='teal.50' borderRadius='10px'>
+        <Flex 
+        width='100%' 
+        height='100vh' 
+        position='absolute' 
+        top='0' 
+        justifyContent='center'
+        zIndex='10'
+        >
+        <Flex width='50%' height='fit-content' boxShadow='12px 12px 2px 1px teal' p={10} direction='column' position='absolute' top='25%' backgroundColor='teal.50' borderRadius='10px'>
         <Flex justifyContent='right'>
             <IoClose
             fontSize='30px'
@@ -76,16 +87,21 @@ function Recipe({recipe}) {
                 </Flex>
                 <Flex direction='column'>
                     <Heading color='teal'>{recipe.name}</Heading>
-                    <Text><b>Prep time:</b> {times[0]}</Text>
-                    <Text><b>Cooking time:</b> {times[1]}</Text>
-                    <Text><b>Total time:</b> {times[2]}</Text>
+                    <Text><b>Prep time:</b> {times[0]} min</Text>
+                    <Text><b>Cooking time:</b> {times[1]} min</Text>
+                    <Text><b>Total time:</b> {times[2]} min</Text>
                     <Text><b>Servings:</b> {recipe.servings}</Text>
-                    <Text><b>Type:</b> {recipe.type}</Text>
+                    <Flex gap={2} direction='row' my={2}> 
+                    <Text><b>Type:</b></Text>
+                     {recipe.type.map((t)=>(
+                        <Badge colorScheme='teal' alignContent='center' variant='outline'>{t}</Badge>
+                    ))}
+                    </Flex>
 
                     <Flex gap={2} direction='row' my={2}>
                         <Text><b>Tags</b></Text>
                         {tags.map((tag) => (
-                         <Badge colorScheme='teal'>{tag}</Badge>
+                         <Badge colorScheme='teal' alignContent='center'>{tag}</Badge>
                     ))}
                     </Flex>
                 </Flex>
@@ -98,13 +114,11 @@ function Recipe({recipe}) {
                     <Text><b>Link:</b> <a href={recipe.link}><u>recipe</u></a></Text>
                     <Flex direction='column' gap={2} >
                         <Text><b>Ingredients</b></Text>
-                        {ingredients.map((ingredientObj, index) =>
-                            Object.entries(ingredientObj).map(([key, value]) => (
-                                <Badge colorScheme='teal' width='fit-content' key={`${key}-${index}`}>
-                                {value} {key}
-                                </Badge>
-                            ))
-                            )}
+                        {ingredients.map((item) => (
+                            <Badge colorScheme='teal' width='fit-content' key={item.name}>
+                            {item.number} {item.unit} {item.name} 
+                            </Badge>
+                        ))}
 
                     </Flex>
                 </Flex>

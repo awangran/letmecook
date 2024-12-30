@@ -100,6 +100,7 @@ function AddRecipe({fetchRecipes, toggleOpen}) {
             ? prev.filter((t) => t !== tag)
             : [...prev, tag]
         );
+        console.log(selectedTags)
         
     }
 
@@ -127,13 +128,11 @@ function AddRecipe({fetchRecipes, toggleOpen}) {
       };
 
       //handle submit recipe button
-      const time = {
-        ptime: ptime,
-        ctime: ctime,
-        ttime: ttime
-      };
 
       const handleSubmit = () => {
+        const time = [ptime, ctime, ttime]
+        const tags = selectedTags
+
 
         const data = {
           name,
@@ -142,7 +141,7 @@ function AddRecipe({fetchRecipes, toggleOpen}) {
           ingredients,
           servings,
           link,
-          selectedTags,
+          tags,
           image,
           notes
         };

@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import Recipe from '../components/recipe/Recipe'
-import { Flex, Text, useDisclosure } from '@chakra-ui/react'
+import { Flex, Heading, Icon, Spacer, Text, useDisclosure } from '@chakra-ui/react'
 import axios from 'axios'
 import AddRecipe from '../components/recipe/AddRecipe'
+import { Link } from 'react-router-dom'
+import { GrHomeRounded } from 'react-icons/gr'
+import { MdAddCircleOutline, MdOutlineShoppingCart } from 'react-icons/md'
 
 
 function Recipes() {
@@ -34,13 +37,51 @@ function Recipes() {
   return (
     <>
     
-      <Navbar heading='Recipes'/>
-      <Text onClick={toggleOpen}>open</Text>
+    <Flex minWidth='100vw' py={16} px={20} alignItems='center'> 
+        <Link to='/'>
+          <Icon as={GrHomeRounded}  fontSize='30px' 
+          sx={{
+            color: 'teal',
+            transition: '.3s',
+            _hover: { color: 'teal.300', cursor: 'pointer'  },  // Hover styles
+        }}
+          />
+        </Link>
+
+        <Spacer />
+        
+        <Heading fontSize='40px' color='teal' >Recipes</Heading>
+
+        <Spacer />
+
+        <Link to='/cart'>
+            <Icon as={MdOutlineShoppingCart} fontSize='35px' mx={8}
+            sx={{
+              color: 'teal',
+              transition: '.3s',
+              _hover: { color: 'teal.300', cursor: 'pointer'  },  // Hover styles
+          }}
+            />
+        </Link>
+
+        <span>
+        <Icon as={MdAddCircleOutline} fontSize='35px' onClick={toggleOpen}
+          sx={{
+            color: 'teal',
+            transition: '.3s',
+            _hover: { color: 'teal.300', cursor: 'pointer'  },  // Hover styles
+        }}
+        />     
+        </span>
+        
+      </Flex>
       <Flex 
       wrap="wrap" 
       gap={6} 
       justifyContent="flex-start" 
-      mx={20}
+      width='100%'
+      height='100vh'
+      px={10}
       >
         {recipes.map((recipe) => (
           <Recipe key={recipe._id} recipe={recipe} />
