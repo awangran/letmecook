@@ -7,12 +7,14 @@ import { GiPlainCircle } from 'react-icons/gi'
 import { IoClose } from "react-icons/io5";
 import { IoTrash } from "react-icons/io5";
 import RecipeInfo from './RecipeInfo';
+import EditRecipe from './EditRecipe';
 
 
 function Recipe({recipe, fetchRecipes, recipes}) {
 
     //Open recipe info
     const [show, setShow] = useState(false)
+    const [show2, setShow2] = useState(false)
     const [canmake, setCanmake] = useState('#ffffff')
     const tags = recipe.tags
     const ingredients = recipe.ingredients
@@ -56,7 +58,6 @@ function Recipe({recipe, fetchRecipes, recipes}) {
           const matchingProduct = products.find(
             product => product.product === ingredient.name && product.quantity.unit === ingredient.unit
           );
-          console.log(matchingProduct)
           //checks if the found product exists and is greater than 0
           if (!matchingProduct || matchingProduct.quantity.number == 0) {
             setCanmake('#9B2C2C') 
@@ -76,7 +77,6 @@ function Recipe({recipe, fetchRecipes, recipes}) {
 
     //handle recipe delete
     const handleDelete = () => {
-        console.log(id)
 
         axios
         .delete(`http://localhost:5555/recipes/${id}`)
@@ -132,7 +132,13 @@ function Recipe({recipe, fetchRecipes, recipes}) {
 
     {show && (
         <RecipeInfo recipe={recipe} canmake={canmake} tags={tags} times={times} ingredients={ingredients}
-        setShow={setShow} show={show}
+        setShow={setShow} show={show} setShow2={setShow2} show2={show2}
+        />
+    )}
+
+    {show2 && (
+        <EditRecipe recipe={recipe} canmake={canmake} tags={tags} times={times} ingredients={ingredients}
+        setShow2={setShow2} show2={show2} fetchRecipes={fetchRecipes}
         />
     )}
 

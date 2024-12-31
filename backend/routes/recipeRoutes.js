@@ -69,17 +69,11 @@ recipeRouter.delete('/:id', async (req,res) => {
     }
 });
 
-/* 
-//TODO fix the next two routes
-
-//route for update product
+//route for update recipe
 recipeRouter.put('/:id', async (req,res) => {
     try {
         if (
-            !req.body.product ||
-            !req.body.quantity ||
-            !req.body.dateIn ||
-            !req.body.type
+            !req.body.name 
         ) {
             return response.status(400).send({
                 message: 'complete all fields'
@@ -87,10 +81,10 @@ recipeRouter.put('/:id', async (req,res) => {
         }
 
         const { id } = req.params;
-        const result = await Product.findByIdAndUpdate(id, req.body);
+        const result = await Recipe.findByIdAndUpdate(id, req.body);
 
         if (!result) {
-            return res.status(404).json({ message: 'product not found'})
+            return res.status(404).json({ message: 'recipe not found'})
         }
         return res.status(200).send({message: "done"})
 
@@ -99,7 +93,5 @@ recipeRouter.put('/:id', async (req,res) => {
         res.status(500).send({ message : err.message})
     }
 })
-
- */
 
 export default recipeRouter;

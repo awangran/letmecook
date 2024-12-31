@@ -1,11 +1,19 @@
-import { Badge, Box, Button, Flex, Heading, HStack, Img, Text } from '@chakra-ui/react'
+import { Badge, Box, Button, Flex, Heading, HStack, Icon, Img, Text } from '@chakra-ui/react'
 import React from 'react'
 import { GiPlainCircle } from 'react-icons/gi'
 import { IoClose, IoTrash } from 'react-icons/io5'
+import { MdEdit } from 'react-icons/md'
 
-function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show}) {
+function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show, setShow2, show2}) {
+    
+    const handleOpenEdit = () => {
+        setShow(!show)
+        setShow2(!show2)
+    }
     
   return (
+
+
     <>
     
     
@@ -41,7 +49,7 @@ function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show}) 
                 <Flex justifyContent='left' alignItems='center' gap={4}>
                     <Heading color='teal'>{recipe.name}</Heading> 
                     <GiPlainCircle fontSize='25px' color={canmake} />
-
+                    <Icon as={MdEdit} onClick={handleOpenEdit} color='teal' fontSize='25px'/>
                     <IoTrash
                     fontSize='25px'
                     color='teal'
