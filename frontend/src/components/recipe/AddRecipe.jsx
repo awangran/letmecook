@@ -37,9 +37,7 @@ function AddRecipe({fetchRecipes, toggleOpen}) {
     const [image, setImage] = useState('')
     const [notes, setNotes] = useState('')
 
-
-    
-
+    const time = [ptime, ctime, ttime]
 
     //fetching products
     const fetchProducts = () => {
@@ -130,9 +128,8 @@ function AddRecipe({fetchRecipes, toggleOpen}) {
       //handle submit recipe button
 
       const handleSubmit = () => {
-        const time = [ptime, ctime, ttime]
+        
         const tags = selectedTags
-
 
         const data = {
           name,
@@ -205,15 +202,15 @@ function AddRecipe({fetchRecipes, toggleOpen}) {
                     <Text color='teal' fontWeight='bold'>Time</Text>
                     <Flex alignItems='center' justifyContent='space-between'>
                         <FormLabel htmlFor='preptime' my={3} color='gray.600' >Prep time</FormLabel>
-                        <Input id="preptime" size='sm' borderRadius={6}  onClick={(e) => {setPtime(e.target.value)}} width={20} type='number' backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
+                        <Input id="preptime" size='sm' borderRadius={6}  onChange={(e) => {setPtime(e.target.value)}} width={20} type='number' backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
                     </Flex>
                     <Flex alignItems='center' justifyContent='space-between'>
                         <FormLabel htmlFor='cookingtime' my={3} color='gray.600'>Cooking time</FormLabel>
-                        <Input id="cookingtime" size='sm' borderRadius={6}  onClick={(e) => {setCtime(e.target.value)}} width={20} type='number' backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
+                        <Input id="cookingtime" size='sm' borderRadius={6}  onChange={(e) => {setCtime(e.target.value)}} width={20} type='number' backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
                     </Flex>
                     <Flex alignItems='center' justifyContent='space-between'>
                         <FormLabel htmlFor='totaltime' my={3} color='gray.600' >Total time</FormLabel>
-                        <Input id="totaltime" size='sm' borderRadius={6}  onClick={(e) => {setTtime(e.target.value)}} width={20} type='number' backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
+                        <Input id="totaltime" size='sm' borderRadius={6}  onChange={(e) => {setTtime(e.target.value)}} width={20} type='number' backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray' />
                     </Flex>
                 </Stack>
 

@@ -84,7 +84,7 @@ function Recipes() {
       px={10}
       >
         {recipes.map((recipe) => (
-          <Recipe key={recipe._id} recipe={recipe} />
+          <Recipe key={recipe._id} recipe={recipe} fetchRecipes={fetchRecipes} recipes={recipes}/>
         ))}
        
       </Flex>

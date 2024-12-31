@@ -51,6 +51,24 @@ recipeRouter.get('/', async (req,res) =>{
         res.status(500).send({ message: err.message })
     }
 });
+
+//route to delete recipe
+recipeRouter.delete('/:id', async (req,res) => {
+    try {
+        const { id } = req.params;
+
+        const result = await Recipe.findByIdAndDelete(id);
+
+        if(!result) {
+            return res.status(404).json({})
+        }
+        return res.status(200).send({message : 'deleted'})
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send({ message: err.message });
+    }
+});
+
 /* 
 //TODO fix the next two routes
 
@@ -82,24 +100,6 @@ recipeRouter.put('/:id', async (req,res) => {
     }
 })
 
-
-//route to delete recipes
-
-fridgeRouter.delete('/:id', async (req,res) => {
-    try {
-        const { id } = req.params;
-
-        const result = await Product.findByIdAndDelete(id);
-
-        if(!result) {
-            return res.status(404).json({})
-        }
-        return res.status(200).send({message : 'deleted'})
-    } catch (err) {
-        console.log(err.message);
-        res.status(500).send({ message: err.message });
-    }
-});
  */
 
 export default recipeRouter;

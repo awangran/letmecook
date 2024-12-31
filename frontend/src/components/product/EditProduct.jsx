@@ -37,6 +37,9 @@ import {
     const [type, setType] = useState()
     const [cost, setCost] = useState()
     const [stock, setStock] = useState()
+    const units = [
+      "unit", "teaspoon", "tablespoon", "cup", "ounce", "pound", "gram", "kilogram", "milliliter", "liter", "pinch", "dash", "quart", "gallon", "sheet", "bottle", "slice"
+  ]
 
     const quantity = {
         number: number,
@@ -135,16 +138,9 @@ import {
                             <NumberInputField placeholder={number} id='number' onChange={(e) => setNumber(e.target.value)} />
                         </NumberInput>
                         <Select placeholder={unit} id='unit' onChange={(e) => setUnit(e.target.value)}>
-                            <option value='und'>und</option>
-                            <option value='kg'>kg</option>
-                            <option value='grams'>grams</option>
-                            <option value='liters'>liters</option>
-                            <option value='ml'>mL</option>
-                            <option value='ml'>ounce</option>
-                            <option value='piece'>piece</option>
-                            <option value='cup'>cup</option>
-                            <option value='tbsp'>tablespoon</option>
-                            <option value='tsp'>teaspoon</option>
+                        {units.map((unit)=>(
+                                <option value={unit} key={unit} >{unit}</option>
+                              ))}
                         </Select>
                     </Flex>
                 </Flex>
