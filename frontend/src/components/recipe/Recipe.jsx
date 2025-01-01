@@ -8,6 +8,7 @@ import { IoClose } from "react-icons/io5";
 import { IoTrash } from "react-icons/io5";
 import RecipeInfo from './RecipeInfo';
 import EditRecipe from './EditRecipe';
+import MakeRecipe from './MakeRecipe';
 
 
 function Recipe({recipe, fetchRecipes, recipes}) {
@@ -15,6 +16,7 @@ function Recipe({recipe, fetchRecipes, recipes}) {
     //Open recipe info
     const [show, setShow] = useState(false)
     const [show2, setShow2] = useState(false)
+    const [showMake, setShowMake] = useState(false)
     const [canmake, setCanmake] = useState('#ffffff')
     const tags = recipe.tags
     const ingredients = recipe.ingredients
@@ -68,10 +70,7 @@ function Recipe({recipe, fetchRecipes, recipes}) {
             setCanmake("#F6AD55"); 
             return;
           }
-      
-          
         }
-      
         setCanmake('#9AE6B4'); // All ingredients are available with sufficient stock
       }
 
@@ -123,7 +122,7 @@ function Recipe({recipe, fetchRecipes, recipes}) {
                 </Flex>
                 <Box>
                     <Button mr={2} colorScheme='teal' onClick={()=> setShow(!show)}>Read</Button>
-                    <Button colorScheme='teal' variant='outline'>Make</Button>
+                    <Button colorScheme='teal' variant='outline' onClick={()=> setShowMake(!showMake)}>Make</Button>
                 </Box>
 
             </Flex>
@@ -141,6 +140,14 @@ function Recipe({recipe, fetchRecipes, recipes}) {
         setShow2={setShow2} show2={show2} fetchRecipes={fetchRecipes}
         />
     )}
+
+    {showMake && (
+        <MakeRecipe recipe={recipe} setShowMake={setShowMake} showMake={showMake} ingredients={ingredients}
+        products={products}
+        />
+    )}
+
+    
 
 
     </>
