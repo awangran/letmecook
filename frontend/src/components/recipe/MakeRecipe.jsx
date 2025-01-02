@@ -1,11 +1,15 @@
-import { Badge, Box, Button, Flex, Heading, Input, Select, SimpleGrid, Spacer, Text } from '@chakra-ui/react'
+import { Badge, Box, Button, Flex, Heading, Input, MenuItem, Select, SimpleGrid, Spacer, Text } from '@chakra-ui/react'
 import React from 'react'
-import { IoClose, IoTrash } from 'react-icons/io5'
+import { IoClose, IoTrash,IoCloseCircle } from 'react-icons/io5'
 import { IoMdCheckmark } from "react-icons/io";
 import { FaWandMagicSparkles } from "react-icons/fa6";
 import { TbApple, TbFridge, TbWeight } from "react-icons/tb";
 import { MdNumbers } from "react-icons/md";
 import { useState } from 'react';
+import { BsCartX } from "react-icons/bs";
+import { RiExchangeBoxLine } from "react-icons/ri";
+import { useEffect } from 'react';
+import axios from 'axios';
 
 
 function MakeRecipe({recipe, setShowMake, showMake, ingredients, products}) {
@@ -13,23 +17,103 @@ function MakeRecipe({recipe, setShowMake, showMake, ingredients, products}) {
         "unit", "teaspoon", "tablespoon", "cup", "ounce", "pound", "gram", "kilogram", "milliliter", "liter", "pinch", "dash", "quart", "gallon", "sheet", "bottle", "slice"
     ]
     const [infridge, setInFridge] = useState('')
+    const [newIngredients, setNewIngredients] = useState(ingredients)
 
-    //function for calculating if able to make
+    //function for calculating if able to make each ingredient
 
     function checkThisIngredient(ingredient, products) {
         const matchingProduct = products.find(
             product => product.product === ingredient.name
           );
         if (!matchingProduct || matchingProduct.quantity.number == 0) {
-            return('not in stock')
+            return(IoCloseCircle)
         }
         if (matchingProduct.quantity.number < ingredient.number && matchingProduct.quantity.number > 0 ){
-            return('not enough stock')
+            return(BsCartX)
         }
         if (matchingProduct.quantity.unit !== ingredient.unit) {
-            return('wrong units')
+            return(RiExchangeBoxLine)
         }
-        return('yes');
+        return(IoMdCheckmark);
+    }
+
+    //function for handling number change
+    function changeNumber(newNumber, ingredient) {
+        setNewIngredients((prevIngredients) =>
+            prevIngredients.map((i) =>
+                i.name === ingredient.name ? { ...i, number: newNumber } : i
+            )
+        
+        );
+    }
+
+    //make recipe function
+    const makeRecipe = () => {
+        for (const ingredient of newIngredients) {
+            const matchingProduct = products.find(
+                product => product.product === ingredient.name
+            );
+            //check that they are the same unit and that product stock is not zero
+            if (matchingProduct.quantity.unit === ingredient.unit && matchingProduct.quantity.number > 0) {
+                console.log(matchingProduct)
+                const {_id:id, product, cost, dateIn, dateOut, type} = matchingProduct;
+                const quantity = {
+                        number: Math.max(0, matchingProduct.quantity.number - ingredient.number),
+                        unit: matchingProduct.quantity.unit,
+                      }
+                const stock = quantity.number === 0 ? false : true;
+                useProduct(id, product, quantity, cost, dateIn, dateOut, type, stock)
+
+                //add later error handling
+            }
+
+        }
+
+    }
+
+    const useProduct = (id, product, quantity, cost, dateIn, dateOut, type, stock) => {
+        
+        const data = {
+        product,
+        quantity,
+        cost,
+        dateIn,
+        dateOut,
+        type,
+        stock
+        };
+        axios
+        .put(`http://localhost:5555/fridge/${id}`, data)
+        .then(() => {
+            alert("product updated")
+        })
+        .catch((err) => {
+            alert('Error happened. Check console.')
+            console.log(err)
+            console.log(data)
+        });
+    };
+    
+      
+    //for debugging
+    useEffect(() => {
+        console.log(newIngredients)
+    }, [newIngredients]);
+
+    //function for handling unit change
+    function changeUnit(newUnit, ingredient) {
+        setNewIngredients((prevIngredients) =>
+            prevIngredients.map((i) =>
+                i.name === ingredient.name ? { ...i, unit: newUnit } : i
+            )
+        
+        );
+    }
+
+    function deleteIngredient(ingredient){
+        setNewIngredients(
+            newIngredients.filter(item => item.name !== ingredient.name),
+        )
     }
 
   return (
@@ -70,7 +154,7 @@ function MakeRecipe({recipe, setShowMake, showMake, ingredients, products}) {
                 <Box><TbFridge/> </Box>
             </SimpleGrid>
             <SimpleGrid columns={{ base: 1, md: 1 }} spacing={4}>
-            {ingredients.map((item, index) => (
+            {newIngredients.map((item, index) => (
                 <Flex 
                 key={index} 
                 gap={2} 
@@ -82,17 +166,20 @@ function MakeRecipe({recipe, setShowMake, showMake, ingredients, products}) {
                 >
                 <Text flex="1">{item.name}</Text>
                 <Input
+                    placeholder={item.number}
                     defaultValue={item.number}
                     size="sm"
                     width="50px"
                     borderRadius={4}
+                    type='number'
+                    onChange={(e) => changeNumber(Number(e.target.value),item)}
                 />
                 <Select
                     size="sm"
                     width={20}
                     defaultValue={item.unit}
                     color="gray.600"
-                    onChange={(e) => setIunit(e.target.value)}
+                    onChange={(e) => changeUnit((e.target.value),item)}
                 >
                     {units.map((unit, unitIndex) => (
                     <option key={unitIndex} value={unit}>
@@ -100,17 +187,15 @@ function MakeRecipe({recipe, setShowMake, showMake, ingredients, products}) {
                     </option>
                     ))}
                 </Select>
-                <Box> 
-                    <Text>{checkThisIngredient(item, products)}</Text>
-                </Box>
+                <Box as={checkThisIngredient(item, products)} /> 
                 <Box as={FaWandMagicSparkles} cursor="pointer" />
-                <Box as={IoTrash} cursor="pointer" />
+                <Box as={IoTrash} cursor="pointer" onClick={(e) => deleteIngredient(item)}/>
                 </Flex>
             ))}
             </SimpleGrid>
             
             <Flex gap={4} justifyContent='center' my={4}>
-                <Button colorScheme='teal' variant='solid'>Make</Button>
+                <Button colorScheme='teal' variant='solid' onClick={makeRecipe}>Make</Button>
                 <Button colorScheme='teal' variant='outline'>Close</Button>
             </Flex>
         </Flex>
