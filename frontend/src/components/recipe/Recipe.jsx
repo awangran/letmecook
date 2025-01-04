@@ -88,6 +88,9 @@ function Recipe({recipe, fetchRecipes, recipes}) {
             console.log(error);
         });
     }
+
+    
+
       
 
   return (
@@ -131,7 +134,7 @@ function Recipe({recipe, fetchRecipes, recipes}) {
 
     {show && (
         <RecipeInfo recipe={recipe} canmake={canmake} tags={tags} times={times} ingredients={ingredients}
-        setShow={setShow} show={show} setShow2={setShow2} show2={show2}
+        setShow={setShow} show={show} setShow2={setShow2} show2={show2} products={products}
         />
     )}
 

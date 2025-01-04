@@ -277,7 +277,7 @@ function AddRecipe({fetchRecipes, toggleOpen}) {
                     )}
                     </Box>
                     <Input id="" size='sm' width={10} type='number' borderRadius={5} backgroundColor='white' variant='filled' border='solid' borderWidth='thin' borderColor='gray.100'
-                    onChange={(e) => {setInumber(e.target.value)}}
+                    onChange={(e) => {setInumber(Number(e.target.value))}}
                     />
                     <Select size='sm' width={20} placeholder='' color='gray.600' onChange={(e) => {setIunit(e.target.value)}}>
                         {
