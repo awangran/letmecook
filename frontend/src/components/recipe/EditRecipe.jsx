@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { FiTrash } from 'react-icons/fi'
 import { IoClose } from 'react-icons/io5'
 
-function EditRecipe({recipe, setShow2, show2, fetchRecipes}) {
+function EditRecipe({recipe, setShow2, show2, fetchRecipes, showAlert}) {
     const [products, setProducts] = useState([]);
     
     const tags = [
@@ -143,14 +143,17 @@ function EditRecipe({recipe, setShow2, show2, fetchRecipes}) {
          axios
           .put(`http://localhost:5555/recipes/${id}`, data)
           .then(() => {
-            console.log("recipe editted")
+           showAlert("success", "Recipe editted successfully")
+            setShow2(!show2)
             fetchRecipes();
           })
           .catch((err) => {
-            alert('Error happened. Check console.')
+            showAlert("error", "There was an error editing this recipe. Check your inputs.")
             console.log(err)
             console.log(data)
           }); 
+
+        
       };
 
   return (
@@ -165,6 +168,7 @@ function EditRecipe({recipe, setShow2, show2, fetchRecipes}) {
     px={20}
     py={5}
     zIndex='10'
+    left='0'
     >
         <Flex justifyContent='flex-end' ><IoClose color='teal' fontSize={30} onClick={()=> setShow2(!show2)}/></Flex>
         

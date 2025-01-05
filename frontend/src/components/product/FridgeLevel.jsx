@@ -2,7 +2,7 @@ import React from 'react'
 import { Flex, Box, Heading} from '@chakra-ui/react'
 import Product from './Product'
 
-function FridgeLevel({ products, fetchProducts }) {
+function FridgeLevel({ products, fetchProducts, showAlert }) {
 
   const levelTypes = [...new Set(products.map(product => product.type))]
   
@@ -24,7 +24,7 @@ function FridgeLevel({ products, fetchProducts }) {
             >
 
             {group.products.map((item) => (
-               <Product key={item._id} product={item} fetchProducts={fetchProducts}/>
+               <Product key={item._id} product={item} fetchProducts={fetchProducts} showAlert={showAlert}/>
 
             ))}
             </Flex>

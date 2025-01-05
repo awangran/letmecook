@@ -31,7 +31,7 @@ export default function Cart() {
       newCart[index].quantity -= 1
       newCart[index].total = newCart[index].cost * newCart[index].quantity
       setCart(newCart)
-      console.log(cart)
+     
 
     } else {
       const newCart = cart.filter(item => item !== cart[index])

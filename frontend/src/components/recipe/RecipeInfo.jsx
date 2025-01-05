@@ -1,11 +1,22 @@
-import { Badge, Box, Button, Flex, Heading, HStack, Icon, Img, Text } from '@chakra-ui/react'
+import { Badge, Box, Button, Flex, Heading, HStack, Icon, Img, Text, useDisclosure } from '@chakra-ui/react'
 import React from 'react'
 import { GiPlainCircle } from 'react-icons/gi'
 import { IoClose, IoTrash } from 'react-icons/io5'
 import { MdEdit, MdOutlineAddShoppingCart } from 'react-icons/md'
+import {
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogOverlay,
+    AlertDialogCloseButton,
+  } from '@chakra-ui/react'
 
-function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show, setShow2, show2, products}) {
-    
+function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show, setShow2, show2, products, showAlert, handleDelete}) {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const cancelRef = React.useRef()
+
     const handleOpenEdit = () => {
         setShow(!show)
         setShow2(!show2)
@@ -22,12 +33,11 @@ function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show, s
                 const quantity = Number(ingredient.number)
                 const unit = matchingProduct.quantity.unit
                 addToCart(id,name,quantity,unit,cost,total)
-                console.log()
                
             } else {
-                console.log({matchingProduct} +" not found")
+                showAlert("error", `${ingredient.name} not found on fridge.`)
             }
-            alert('recipe added to cart')
+            showAlert("success", `Recipe product ${ingredient.name} added to cart`)
                
         }
 
@@ -47,7 +57,6 @@ function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show, s
     
         if (cartArray !== null) {
             const existingProductIndex = cartArray.findIndex(element => element.id === cartProduct.id);
-            //added logic if the product is already in the cart
             if (existingProductIndex !== -1) {
                 cartArray[existingProductIndex].quantity += cartProduct.quantity;
                 cartArray[existingProductIndex].total = cartArray[existingProductIndex].cost * cartArray[existingProductIndex].quantity
@@ -59,6 +68,7 @@ function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show, s
         } else {
             localStorage.setItem("cartArray", JSON.stringify([cartProduct]));
         }
+        
     };
     
     
@@ -68,13 +78,14 @@ function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show, s
     <>
     
     
-    <Flex 
-        width='100%' 
+    <Flex
+        width='100%'
         height='100vh' 
         position='absolute' 
         top='0' 
         justifyContent='center'
         zIndex='10'
+        left='0'
         >
         <Flex width='50%' height='fit-content' boxShadow='12px 12px 2px 1px teal' p={10} direction='column' position='absolute' top='25%' backgroundColor='teal.50' borderRadius='10px'>
         <Flex justifyContent='right' alignContent='center'>
@@ -111,7 +122,7 @@ function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show, s
                     cursor='pointer'
                     fontSize='25px'
                     color='teal'
-                    onClick={()=> handleDelete()}
+                    onClick={onOpen}
                     />
                     
                     </Flex>
@@ -163,13 +174,39 @@ function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show, s
 
             <Flex my={4} justifyContent='center'>
                 <Button mr={2} colorScheme='teal' onClick={()=> setShow(!show)}>Close</Button>
-                <Button colorScheme='teal' variant='outline'>Make</Button>
             </Flex>
             
 
 
         </Flex>
         </Flex>
+
+        <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+              Delete recipe
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure? You can't undo this action afterwards.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button colorScheme='teal' onClick={handleDelete} ml={3}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </>
   )
 }

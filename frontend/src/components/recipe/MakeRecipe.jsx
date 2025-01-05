@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 
 
-function MakeRecipe({recipe, setShowMake, showMake, ingredients, products}) {
+function MakeRecipe({recipe, setShowMake, showMake, ingredients, products, showAlert}) {
     const units = [
         "unit", "teaspoon", "tablespoon", "cup", "ounce", "pound", "gram", "kilogram", "milliliter", "liter", "pinch", "dash", "quart", "gallon", "sheet", "bottle", "slice"
     ]
@@ -55,7 +55,6 @@ function MakeRecipe({recipe, setShowMake, showMake, ingredients, products}) {
             );
             //check that they are the same unit and that product stock is not zero
             if (matchingProduct.quantity.unit === ingredient.unit && matchingProduct.quantity.number > 0) {
-                console.log(matchingProduct)
                 const {_id:id, product, cost, dateIn, dateOut, type} = matchingProduct;
                 const quantity = {
                         number: Math.max(0, matchingProduct.quantity.number - ingredient.number),
@@ -65,9 +64,11 @@ function MakeRecipe({recipe, setShowMake, showMake, ingredients, products}) {
                 useProduct(id, product, quantity, cost, dateIn, dateOut, type, stock)
 
                 //add later error handling
+            } else {
+                showAlert("error", "Wrong units or not enough of " + ingredient.name)
             }
-
         }
+
 
     }
 
@@ -85,10 +86,10 @@ function MakeRecipe({recipe, setShowMake, showMake, ingredients, products}) {
         axios
         .put(`http://localhost:5555/fridge/${id}`, data)
         .then(() => {
-            alert("product updated")
+            showAlert("success", `${product} quantity updated!`)
         })
         .catch((err) => {
-            alert('Error happened. Check console.')
+            showAlert("error", "Failed to update product " + {product})
             console.log(err)
             console.log(data)
         });
@@ -122,6 +123,7 @@ function MakeRecipe({recipe, setShowMake, showMake, ingredients, products}) {
     height='100vh' 
     position='absolute' 
     top='0' 
+    left='0'
     direction='column'
     px={20}
     py={5}

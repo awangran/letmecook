@@ -3,15 +3,26 @@ import useLocalStorageState from 'use-local-storage-state'
 import { GiPlainCircle } from "react-icons/gi";
 import { MdEdit } from "react-icons/md";
 import { FiTrash } from "react-icons/fi";
-import { Box, Text, Flex, useDisclosure, Icon } from '@chakra-ui/react'
+import { Box, Text, Flex, useDisclosure, Icon, Alert, AlertIcon, AlertTitle, AlertDescription, CloseButton, Button } from '@chakra-ui/react'
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { format } from 'date-fns';
 import { differenceInDays } from 'date-fns';
 import axios from 'axios';
 import EditProduct from './EditProduct';
+import {
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogOverlay,
+    AlertDialogCloseButton,
+  } from '@chakra-ui/react'
 
-export default function Product({ product, fetchProducts }) {
-    const { isOpen, onOpen, onClose } = useDisclosure();
+export default function Product({ product, fetchProducts, showAlert }) {
+    const { isOpen: isOpen1, onOpen: onOpen1 , onClose:onClose1 } = useDisclosure();
+    const { isOpen: isOpen2, onOpen: onOpen2 , onClose:onClose2 } = useDisclosure();
+    const cancelRef = React.useRef()
 
     //formatting date
     const [show, setShow] = useState(false);
@@ -69,16 +80,15 @@ export default function Product({ product, fetchProducts }) {
 
     //handle product delete
     const handleDelete = () => {
-        console.log(id)
 
         axios
         .delete(`http://localhost:5555/fridge/${id}`)
         .then(() => {
-            console.log("product deleted")
+            showAlert("success", 'Product deleted')
             fetchProducts();
         })
         .catch((error) => {
-            alert('An error happened. Please Check console');
+            showAler('error', 'An error happened. Check console.');
             console.log(error);
         });
     }
@@ -87,6 +97,7 @@ export default function Product({ product, fetchProducts }) {
     const [cart, setCart] = useState([])
 
     const addToCart = () => {
+       
 
         let cartProduct = {
             id: product._id,
@@ -98,20 +109,23 @@ export default function Product({ product, fetchProducts }) {
         }
 
         let cartArray = JSON.parse(localStorage.getItem('cartArray'));
-
-        if (cartArray !== null){
-            const result = cartArray.find(element => element.id === cartProduct.id)
-            if (result == undefined) {
+    
+        if (cartArray !== null) {
+            const existingProductIndex = cartArray.findIndex(element => element.id === cartProduct.id);
+            if (existingProductIndex !== -1) {
+                cartArray[existingProductIndex].quantity += cartProduct.quantity;
+                cartArray[existingProductIndex].total = cartArray[existingProductIndex].cost * cartArray[existingProductIndex].quantity
+            } else {
                 cartArray.push(cartProduct);
-                localStorage.setItem("cartArray", JSON.stringify(cartArray));
             }
-           
+    
+            localStorage.setItem("cartArray", JSON.stringify(cartArray));
         } else {
             localStorage.setItem("cartArray", JSON.stringify([cartProduct]));
         }
-        
+        showAlert("success", `${product.product} added to cart.`)
       }
-    
+         
 
     
 
@@ -151,14 +165,14 @@ export default function Product({ product, fetchProducts }) {
                 transition: '.3s',
                 _hover: { color: 'teal.400', cursor: 'pointer'  },  // Hover styles
             }} />
-                <Icon as={MdEdit} onClick={onOpen}
+                <Icon as={MdEdit} onClick={onOpen1}
                 sx={{
                     color: 'grey',
                     transition: '.3s',
                     _hover: { color: 'teal.400', cursor: 'pointer'  },  // Hover styles
                 }}
                 />
-                <Icon as={FiTrash} onClick={handleDelete}
+                <Icon as={FiTrash} onClick={onOpen2}
                 sx={{
                     color: 'grey',
                     transition: '.3s',
@@ -169,8 +183,35 @@ export default function Product({ product, fetchProducts }) {
 
         </Flex>
     </Box>
-    <EditProduct isOpen={isOpen} onClose={onClose} fetchProducts={fetchProducts} id={id} />
+    <EditProduct isOpen={isOpen1} onClose={onClose1} fetchProducts={fetchProducts} id={id} showAlert={showAlert} />
     
+    <AlertDialog
+        isOpen={isOpen2}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose2}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+              Delete product
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure? You can't undo this action afterwards.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose2}>
+                Cancel
+              </Button>
+              <Button colorScheme='teal' onClick={handleDelete} ml={3}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
     </>
   )
 }

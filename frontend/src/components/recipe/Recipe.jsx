@@ -11,7 +11,7 @@ import EditRecipe from './EditRecipe';
 import MakeRecipe from './MakeRecipe';
 
 
-function Recipe({recipe, fetchRecipes, recipes}) {
+function Recipe({recipe, fetchRecipes, recipes, showAlert}) {
 
     //Open recipe info
     const [show, setShow] = useState(false)
@@ -134,19 +134,19 @@ function Recipe({recipe, fetchRecipes, recipes}) {
 
     {show && (
         <RecipeInfo recipe={recipe} canmake={canmake} tags={tags} times={times} ingredients={ingredients}
-        setShow={setShow} show={show} setShow2={setShow2} show2={show2} products={products}
+        setShow={setShow} show={show} setShow2={setShow2} show2={show2} products={products} showAlert={showAlert} handleDelete={handleDelete}
         />
     )}
 
     {show2 && (
         <EditRecipe recipe={recipe} canmake={canmake} tags={tags} times={times} ingredients={ingredients}
-        setShow2={setShow2} show2={show2} fetchRecipes={fetchRecipes}
+        setShow2={setShow2} show2={show2} fetchRecipes={fetchRecipes} showAlert={showAlert}
         />
     )}
 
     {showMake && (
         <MakeRecipe recipe={recipe} setShowMake={setShowMake} showMake={showMake} ingredients={ingredients}
-        products={products}
+        products={products} showAlert={showAlert}
         />
     )}
 

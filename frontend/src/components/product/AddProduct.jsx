@@ -28,7 +28,7 @@ import {
   } from '@chakra-ui/react'
 
 
-  function AddProduct({ isOpen, onClose, fetchProducts }) {
+  function AddProduct({ isOpen, onClose, fetchProducts, showAlert}) {
     const [product, setProduct] = useState()
     const [number, setNumber] = useState()
     const [unit, setUnit] = useState('unit')
@@ -71,16 +71,23 @@ import {
       axios
         .post('http://localhost:5555/fridge', data)
         .then(() => {
-          console.log("product added")
+          showAlert('success', 'Product added to fridge');
+          onClose();
           fetchProducts();
+          resetFields();
         })
         .catch((err) => {
-          alert('Error happened. Check console.')
+          onClose();
+          showAlert('warning', 'Error while adding product. Check all fields.')
           console.log(err)
           console.log(data)
         });
     };
 
+    const resetFields = () => {
+      setProduct(null)
+      setNumber(null)
+    }
 
     return (
       <>

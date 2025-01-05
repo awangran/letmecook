@@ -8,7 +8,7 @@ import axios from 'axios';
 import { IoClose } from "react-icons/io5";
 
 
-function AddRecipe({fetchRecipes, toggleOpen}) {
+function AddRecipe({fetchRecipes, toggleOpen, showAlert}) {
     const [products, setProducts] = useState([]);
     
     const tags = [
@@ -145,7 +145,8 @@ function AddRecipe({fetchRecipes, toggleOpen}) {
         axios
           .post('http://localhost:5555/recipes', data)
           .then(() => {
-            console.log("recipe added")
+            showAlert("success", "Recipe added");
+            toggleOpen();
             fetchRecipes();
           })
           .catch((err) => {

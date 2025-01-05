@@ -27,7 +27,7 @@ import {
   } from '@chakra-ui/react'
 
 
-  function EditProduct({ isOpen, onClose, fetchProducts, id }) {
+  function EditProduct({ isOpen, onClose, fetchProducts, id, showAlert }) {
     
     const [product, setProduct] = useState()
     const [number, setNumber] = useState()
@@ -59,10 +59,11 @@ import {
             setDateout(res.data.dateOut);
             setType(res.data.type);
             setCost(res.data.cost);
+            
 
           })
           .catch((error) => {
-            alert('An error happened. Please Check console');
+            showAlert('error' ,'An error happened while fetching the products.');
             console.log(error);
           });
       }, [])
@@ -97,11 +98,13 @@ import {
         axios
         .put(`http://localhost:5555/fridge/${id}`, data)
         .then(() => {
-            console.log("product editted")
+            showAlert("success", `${product} edited successfully.`);
+            onClose();
             fetchProducts();
         })
         .catch((err) => {
-            alert('Error happened. Check console.')
+            showAlert("error", `Error editing this product. Check all fields.`);
+            onClose();
             console.log(err)
             console.log(data)
         });
