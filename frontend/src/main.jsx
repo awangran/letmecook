@@ -17,11 +17,9 @@ const colors = {
 const theme = extendTheme({ colors })
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <Router>
         <ChakraProvider theme={theme}>
           <App />
         </ChakraProvider>
     </Router>
-  </StrictMode>
 )
