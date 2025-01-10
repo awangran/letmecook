@@ -98,7 +98,6 @@ function AddRecipe({fetchRecipes, toggleOpen, showAlert}) {
             ? prev.filter((t) => t !== tag)
             : [...prev, tag]
         );
-        console.log(selectedTags)
         
     }
 

@@ -44,7 +44,7 @@ function Search() {
     console.log(ingredients)
   }, [ingredients]
   )
-
+/* 
   //Fetch recipes from spoonocular api after ingredients load
   const fetchRecipes = () => {
     // Fetch from API if not in local storage
@@ -52,7 +52,8 @@ function Search() {
 
     if (ingredients != '') {
       axios
-      .get(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${ingredients}&number=2`)
+      //.get(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${ingredients}&number=1`)
+      
       .then((res) => {
         setRecipes(res.data);
         console.log(recipes);
@@ -67,13 +68,13 @@ function Search() {
     fetchRecipes();
   }, [ingredients]); // re runs when ingredients change
   
-
+ */
 
   return (
     <>
     <Navbar/>
     <Flex justifyContent='center' width='100%'>
-    <Searchbar />
+    <Searchbar products={products} />
     </Flex>
     <Flex wrap="wrap" 
       gap={6} 
