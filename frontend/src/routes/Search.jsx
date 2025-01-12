@@ -9,7 +9,6 @@ function Search() {
   const [recipes, setRecipes] = useState([]);
   const [products, setProducts] = useState([]);
   const [ingredients, setIngredients] = useState();
-  const [ingredientsString, setIngredientsString] = useState('');
   const [filterprops, setFilterProps] = useState();
   //Fetch products from db
   const fetchProducts = () => {
@@ -49,9 +48,9 @@ function Search() {
     if (ingredients != '') {
       axios
       //.get(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${ingredients}&number=1`)
-      .get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${filterprops}&fillIngredients=true&addRecipeInformation=true&sort=max-used-ingredients&number=2`)
+      .get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${filterprops}&fillIngredients=true&addRecipeInformation=true&sort=min-missing-ingredients&number=1`)
       .then((res) => {
-        setRecipes(res.data);
+        setRecipes(res.data.results);
         console.log(recipes);
         console.log('recipe fetched')
       })
@@ -60,17 +59,17 @@ function Search() {
       });
     }
   };
-/*   
-  useEffect(() => {
+  
+ useEffect(() => {
     fetchRecipes();
-  }, [ingredients]); // re runs when ingredients change
-   */
+  }, [ingredients, filterprops]); // re runs when ingredients change 
+
 
   return (
     <>
     <Navbar/>
     <Flex justifyContent='center' width='100%'>
-    <Searchbar products={products} setFilterProps={setFilterProps} fetchRecipes={fetchRecipes}/>
+    <Searchbar products={products} setFilterProps={setFilterProps} fetchRecipes={fetchRecipes} />
     </Flex>
     <Flex wrap="wrap" 
       gap={6} 
@@ -79,9 +78,9 @@ function Search() {
       my={10}
       >
 
-  {/* {recipes.map((recipe) => (
+    {recipes.map((recipe) => (
       <RecipeCard recipe={recipe} key={recipe.id}/>
-    ))} */}
+    ))} 
 
     </Flex>
 

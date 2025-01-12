@@ -43,11 +43,12 @@ const Searchbar = ({products, setFilterProps, fetchRecipes}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [ingredientname, setIngredientname] = useState()
   const [excludeIngredients, setExcludeIngredients] = useState([])
-  const [includeIngredients, setIncludeIngredients] = useState([])
+  const [includeIngredients, setIncludeIngredients] = useState(products)
   const [type, setType] = useState([])
   const [maxReadyTime, setTime] = useState(0)
   const [pantry, setPantry] = useState(false)
   const [showFilters, setShowFilters] = useState(false);
+  const [query, setQuery] = useState('')
 
 
   //handle tag cuisine buttons clicked
@@ -120,12 +121,14 @@ const Searchbar = ({products, setFilterProps, fetchRecipes}) => {
   //convert variables to request string apiKey=${apiKey}&ingredients=${ingredients}
   const turnToString = () => {
     const properties = {
+      'query': query,
       'type': type,
       'cuisine': cuisine,
       'maxReadyTime':maxReadyTime,
       'excludeIngredients':excludeIngredients,
       'includeIngredients':includeIngredients
     }
+    console.log(properties)
     const propArray = [`pantry=${pantry}`]
 
     for (const p in properties) {
@@ -141,9 +144,13 @@ const Searchbar = ({products, setFilterProps, fetchRecipes}) => {
     
     console.log(propArray.join('&'))
     setFilterProps(propArray.join('&'))
-    fetchRecipes()
   }
- 
+
+  useEffect(() => {
+    turnToString();
+    console.log('ran')
+  }, []); // re runs when inputs change 
+
 
   return (
     <>
@@ -159,7 +166,7 @@ const Searchbar = ({products, setFilterProps, fetchRecipes}) => {
     <InputLeftElement pointerEvents='none'>
       <IoSearch color='teal' />
     </InputLeftElement>
-    <Input type='tel' placeholder='Search recipe' />
+    <Input type='tel' placeholder='Search recipe' onChange={(e) => setQuery(e.target.value)}/>
     </InputGroup>
     <IoFilter color='teal' cursor='pointer' fontSize='25px' onClick={() => setShowFilters(!showFilters)}/>
     </Flex>

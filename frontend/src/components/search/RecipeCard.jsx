@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, CardHeader, CardBody, CardFooter, Image, Stack, Heading, Text, ButtonGroup, Button, Divider, List, ListItem, UnorderedList } from '@chakra-ui/react'
+import { Card, CardHeader, CardBody, CardFooter, Image, Stack, Heading, Text, ButtonGroup, Button, Divider, List, ListItem, UnorderedList, Flex } from '@chakra-ui/react'
 
 function RecipeCard({recipe}) {
     const instock = recipe.usedIngredients
