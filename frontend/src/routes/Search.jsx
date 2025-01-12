@@ -10,7 +10,7 @@ function Search() {
   const [products, setProducts] = useState([]);
   const [ingredients, setIngredients] = useState();
   const [ingredientsString, setIngredientsString] = useState('');
-  ;
+  const [filterprops, setFilterProps] = useState();
   //Fetch products from db
   const fetchProducts = () => {
     
@@ -40,11 +40,7 @@ function Search() {
     } 
   }, [products]);
 
-  useEffect(() => {
-    console.log(ingredients)
-  }, [ingredients]
-  )
-/* 
+
   //Fetch recipes from spoonocular api after ingredients load
   const fetchRecipes = () => {
     // Fetch from API if not in local storage
@@ -53,28 +49,28 @@ function Search() {
     if (ingredients != '') {
       axios
       //.get(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${ingredients}&number=1`)
-      
+      .get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${filterprops}&fillIngredients=true&addRecipeInformation=true&sort=max-used-ingredients&number=2`)
       .then((res) => {
         setRecipes(res.data);
         console.log(recipes);
+        console.log('recipe fetched')
       })
       .catch((err) => {
         console.log(err);
       });
     }
   };
-  
+/*   
   useEffect(() => {
     fetchRecipes();
   }, [ingredients]); // re runs when ingredients change
-  
- */
+   */
 
   return (
     <>
     <Navbar/>
     <Flex justifyContent='center' width='100%'>
-    <Searchbar products={products} />
+    <Searchbar products={products} setFilterProps={setFilterProps} fetchRecipes={fetchRecipes}/>
     </Flex>
     <Flex wrap="wrap" 
       gap={6} 
@@ -83,9 +79,9 @@ function Search() {
       my={10}
       >
 
-  {recipes.map((recipe) => (
+  {/* {recipes.map((recipe) => (
       <RecipeCard recipe={recipe} key={recipe.id}/>
-    ))}
+    ))} */}
 
     </Flex>
 

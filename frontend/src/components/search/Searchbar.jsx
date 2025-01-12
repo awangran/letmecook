@@ -1,11 +1,12 @@
-import { Box, Button, Checkbox, Flex, Input, InputGroup, InputLeftElement, List, ListItem, Stack, Text, UnorderedList } from '@chakra-ui/react'
+import { Box, Button, Checkbox, Flex, Input, InputGroup, InputLeftElement, List, ListItem, Radio, RadioGroup, Select, Stack, Text, UnorderedList } from '@chakra-ui/react'
 import React from 'react'
+import { useEffect } from 'react'
 import { useState } from 'react'
 import { FiTrash } from 'react-icons/fi'
 import { IoFilter, IoSearch } from 'react-icons/io5'
 
 
-const Searchbar = ({products}) => {
+const Searchbar = ({products, setFilterProps, fetchRecipes}) => {
   const cuisineList = [
     'African',
     'Asian',
@@ -42,9 +43,10 @@ const Searchbar = ({products}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [ingredientname, setIngredientname] = useState()
   const [excludeIngredients, setExcludeIngredients] = useState([])
+  const [includeIngredients, setIncludeIngredients] = useState([])
   const [type, setType] = useState([])
-  const [time, setTime] = useState(0)
-  const [pantry, setPantry] = useState(false)
+  const [maxReadyTime, setTime] = useState(0)
+  const [pantry, setPantry] = useState(false)
   const [showFilters, setShowFilters] = useState(false);
 
 
@@ -96,17 +98,6 @@ const Searchbar = ({products}) => {
   const handleBlur = () => {
     setTimeout(() => setIsOpen(false), 100); // Delay to allow option selection
   };
-
-  //handle type of recipe array
-  const handleType = (e) =>{
-    const { value, checked } = e.target;
-
-    if (checked) {
-    setType((prev) => [...prev, value]);
-    } else {
-    setType((prev) => prev.filter((item) => item !== value));
-    }
-   }
   
     //handle exclude pantry items
   const handlePantry = (e) =>{
@@ -117,6 +108,40 @@ const Searchbar = ({products}) => {
     } else {
     setPantry(false);
     }
+  }
+
+  //update include ingredients array when exclude ingredients array changes
+  useEffect(() => {
+    setIncludeIngredients(
+      products.filter(item => !excludeIngredients.includes(item.product)).map(item => item.product)
+    )
+  }, [excludeIngredients])
+
+  //convert variables to request string apiKey=${apiKey}&ingredients=${ingredients}
+  const turnToString = () => {
+    const properties = {
+      'type': type,
+      'cuisine': cuisine,
+      'maxReadyTime':maxReadyTime,
+      'excludeIngredients':excludeIngredients,
+      'includeIngredients':includeIngredients
+    }
+    const propArray = [`pantry=${pantry}`]
+
+    for (const p in properties) {
+      if (properties[p].length > 0) {
+        if (Array.isArray(properties[p])) {
+          const stringified = properties[p].map(item => item.toLowerCase()).toString();
+          propArray.push(`${p}=${stringified}`);
+        } else {
+          propArray.push(`${p}=${properties[p].toLowerCase()}`);
+        }
+      }
+    }
+    
+    console.log(propArray.join('&'))
+    setFilterProps(propArray.join('&'))
+    fetchRecipes()
   }
  
 
@@ -141,6 +166,7 @@ const Searchbar = ({products}) => {
 
     {/* cuisine, includeIngredients, excludeIngredients, type, fillIngredients, maxReadyTime, ignorePantry */}
     {showFilters && (
+      <Flex direction='column'>
        <Flex
        mx={20}
        direction='row'
@@ -220,41 +246,49 @@ const Searchbar = ({products}) => {
    
            <Flex direction='column'>
              <Text color='teal' fontWeight='bold' mb={2} ml={2}>Type</Text>
+             <RadioGroup onChange={setType} value={type}>
              <Stack spacing={2} px={4} direction={['column', 'column']} color='gray.600'>
-                             <Checkbox size='sm' colorScheme='teal' value='main course' onChange={(e) => {handleType(e)}}>
-                               Main Course
-                             </Checkbox>
-                             <Checkbox size='sm' colorScheme='teal'  value='side dish' onChange={(e) => {handleType(e)}}>
-                               Side Dish
-                             </Checkbox>
-                             <Checkbox size='sm' colorScheme='teal'   value='breakfast' onChange={(e) => {handleType(e)}}>
-                               Breakfast
-                             </Checkbox>
-                             <Checkbox size='sm' colorScheme='teal'   value='soup' onChange={(e) => {handleType(e)}}>
-                               Soup
-                             </Checkbox>
-                             <Checkbox size='sm' colorScheme='teal'  value='snack' onChange={(e) => {handleType(e)}}>
-                                 Snack
-                             </Checkbox>
-                             <Checkbox size='sm' colorScheme='teal'  value='dessert' onChange={(e) => {handleType(e)}}>
-                                 Dessert
-                             </Checkbox>
-                             <Checkbox size='sm' colorScheme='teal'  value='drink' onChange={(e) => {handleType(e)}}>
-                                 Drink
-                             </Checkbox>
-                         </Stack>
+                  <Radio size='sm' colorScheme='teal' value='main course'>
+                    Main Course
+                  </Radio>
+                  <Radio size='sm' colorScheme='teal'  value='side dish'>
+                    Side Dish
+                  </Radio>
+                  <Radio size='sm' colorScheme='teal'   value='breakfast'>
+                    Breakfast
+                  </Radio>
+                  <Radio size='sm' colorScheme='teal'   value='soup'>
+                    Soup
+                  </Radio>
+                  <Radio size='sm' colorScheme='teal'  value='snack'>
+                      Snack
+                  </Radio>
+                  <Radio size='sm' colorScheme='teal'  value='dessert'>
+                      Dessert
+                  </Radio>
+                  <Radio size='sm' colorScheme='teal'  value='drink'>
+                      Drink
+                  </Radio>
+              </Stack>
+              </RadioGroup>
              </Flex>
    
              <Flex direction='column' gap={4}>
              <Text color='teal' fontWeight='bold' mb={2} ml={2}>Cooking time (mins)</Text>
-             <Input type='number' onChange={(e) => {setTime(e)}} />
+             <Input type='number' onChange={(e) => {setTime(e.target.value)}} />
    
              <Text color='teal' fontWeight='bold' mb={2} ml={2}>Ignore pantry items</Text>
              <Checkbox size='lg' colorScheme='teal' onChange={(e) => {handlePantry(e)}}>
                  Ignore
              </Checkbox>
              </Flex>
-   
+        </Flex>
+
+        <Flex justifyContent='center'>
+          <Button colorScheme='teal' onClick={turnToString}>Search</Button>
+        </Flex>
+            
+       
        </Flex>
     )}
    
