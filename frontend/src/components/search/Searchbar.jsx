@@ -4,9 +4,11 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import { FiTrash } from 'react-icons/fi'
 import { IoFilter, IoSearch } from 'react-icons/io5'
+import { v4 as uuid } from 'uuid';
 
 
-const Searchbar = ({products, setFilterProps, fetchRecipes}) => {
+
+const Searchbar = ({products, setFilterProps, fetchRecipes, ingredients}) => {
   const cuisineList = [
     'African',
     'Asian',
@@ -43,7 +45,6 @@ const Searchbar = ({products, setFilterProps, fetchRecipes}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [ingredientname, setIngredientname] = useState()
   const [excludeIngredients, setExcludeIngredients] = useState([])
-  const [includeIngredients, setIncludeIngredients] = useState(products)
   const [type, setType] = useState([])
   const [maxReadyTime, setTime] = useState(0)
   const [pantry, setPantry] = useState(false)
@@ -58,7 +59,6 @@ const Searchbar = ({products, setFilterProps, fetchRecipes}) => {
         ? prev.filter((t) => t !== tag)
         : [...prev, tag]
     );
-    console.log(cuisine)
   }
 
   //handle add ingredient field
@@ -111,45 +111,22 @@ const Searchbar = ({products, setFilterProps, fetchRecipes}) => {
     }
   }
 
-  //update include ingredients array when exclude ingredients array changes
-  useEffect(() => {
-    setIncludeIngredients(
-      products.filter(item => !excludeIngredients.includes(item.product)).map(item => item.product)
-    )
-  }, [excludeIngredients])
-
-  //convert variables to request string apiKey=${apiKey}&ingredients=${ingredients}
-  const turnToString = () => {
-    const properties = {
+  const turnToString = () => {
+    const properties = {  
       'query': query,
+      'pantry':pantry,
       'type': type,
       'cuisine': cuisine,
       'maxReadyTime':maxReadyTime,
       'excludeIngredients':excludeIngredients,
-      'includeIngredients':includeIngredients
     }
-    console.log(properties)
-    const propArray = [`pantry=${pantry}`]
-
-    for (const p in properties) {
-      if (properties[p].length > 0) {
-        if (Array.isArray(properties[p])) {
-          const stringified = properties[p].map(item => item.toLowerCase()).toString();
-          propArray.push(`${p}=${stringified}`);
-        } else {
-          propArray.push(`${p}=${properties[p].toLowerCase()}`);
-        }
-      }
-    }
-    
-    console.log(propArray.join('&'))
-    setFilterProps(propArray.join('&'))
+    setFilterProps(properties)
   }
 
   useEffect(() => {
     turnToString();
-    console.log('ran')
-  }, []); // re runs when inputs change 
+    
+  }, [ingredients, type, cuisine, maxReadyTime, excludeIngredients, pantry])
 
 
   return (
@@ -186,7 +163,7 @@ const Searchbar = ({products, setFilterProps, fetchRecipes}) => {
                <Flex  wrap="wrap" justifyContent='left' gap={2}  spacing={2} border='solid' borderWidth='thin' p={4} borderRadius={5} borderColor='gray.100'>
                    {
                        cuisineList.map((tag) => (
-                           <Button key={tag} width='fit-content' size='xs' colorScheme='teal' variant={cuisine.includes(tag) ? "solid" : "outline"}  id={tag} onClick={()=>{handleCuisine(tag)}}
+                           <Button key={uuid()} width='fit-content' size='xs' colorScheme='teal' variant={cuisine.includes(tag) ? "solid" : "outline"}  id={tag} onClick={()=>{handleCuisine(tag)}}
                            >{tag}</Button>
                        ))
                    }
@@ -219,7 +196,7 @@ const Searchbar = ({products, setFilterProps, fetchRecipes}) => {
            >
            {filteredInput.map((item) => (
                <ListItem
-               key={item}
+               key={uuid()}
                px={4}
                py={2}
                cursor="pointer"
@@ -239,7 +216,7 @@ const Searchbar = ({products, setFilterProps, fetchRecipes}) => {
            <UnorderedList>
              {excludeIngredients.map((item) => (
                  <>
-                     <ListItem marginRight={2} key={item}>
+                     <ListItem marginRight={2} key={uuid()}>
                          <Flex gap={2} alignItems='center'>
                              {item} 
                              <FiTrash onClick={() => {handleDelete(item)}} /> 
