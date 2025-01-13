@@ -82,6 +82,7 @@ function Search() {
   }, [propArray])
 
 
+ /* ORIGINAL FETCH FUNCTIONNNN
   //Fetch recipes from spoonocular api after ingredients load
   const fetchRecipes = (propString) => {
     // Fetch from API if not in local storage
@@ -89,9 +90,9 @@ function Search() {
       //.get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${filterprops}&fillIngredients=true&addRecipeInformation=true&sort=min-missing-ingredients&number=1`)
 
     if (propString !== '') {
-      console.log(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${propString}&sort=min-missing-ingredients&number=1`)
+      console.log(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${propString}&fillIngredients=true&addRecipeInformation=true&sort=min-missing-ingredients&number=1`)
       axios
-      .get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${propString}&sort=min-missing-ingredients&number=1`)
+      .get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${propString}&fillIngredients=true&addRecipeInformation=true&sort=min-missing-ingredients&number=1`)
       .then((res) => {
         setRecipes(res.data.results);
         console.log('recipe fetched')
@@ -99,6 +100,43 @@ function Search() {
       .catch((err) => {
         console.log(err);
       });
+    }
+  };
+   */
+
+  //TESTING FETCH FUNCTION
+  const fetchRecipes = (propString) => {
+    const apiKey = import.meta.env.VITE_API_KEY;
+    const localStorageKey = "firstRecipe";
+  
+    // Check if the first recipe is already in localStorage
+    const savedRecipe = localStorage.getItem(localStorageKey);
+    if (savedRecipe) {
+      console.log("Using cached recipe from localStorage");
+      setRecipes([JSON.parse(savedRecipe)]);
+      return;
+    }
+  
+    if (propString !== "") {
+      axios
+        .get(
+          `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${propString}&fillIngredients=true&addRecipeInformation=true&sort=min-missing-ingredients&number=1`
+        )
+        .then((res) => {
+          const fetchedRecipes = res.data.results;
+  
+          if (fetchedRecipes && fetchedRecipes.length > 0) {
+            // Save the first recipe to localStorage
+            localStorage.setItem(localStorageKey, JSON.stringify(fetchedRecipes[0]));
+  
+            // Set the recipes in state
+            setRecipes(fetchedRecipes);
+            console.log("Recipe fetched and saved to localStorage");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   };
   
@@ -120,6 +158,16 @@ function Search() {
       mx={20}
       my={10}
       >
+      {recipes && recipes.length > 0 ? (
+        recipes.map((recipe) => (
+          <RecipeCard key={recipe.id} recipe={recipe} />
+        ))
+      ) : (
+        <p>Loading recipes...</p>
+      )}
+
+
+      
          
     
 
