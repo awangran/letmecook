@@ -1,9 +1,14 @@
 import React from 'react'
 import { Card, CardHeader, CardBody, CardFooter, Image, Stack, Heading, Text, ButtonGroup, Button, Divider, List, ListItem, UnorderedList, Flex } from '@chakra-ui/react'
+import GeneratedRecipeInfo from './GeneratedRecipeInfo'
+import { useState } from 'react'
+
 
 function RecipeCard({recipe}) {
     const instock = recipe.usedIngredients
     const nostock = recipe.missedIngredients
+    const [show, setShow] = useState(false);
+
   return (
     <>
     <Card maxW='sm'>
@@ -17,28 +22,20 @@ function RecipeCard({recipe}) {
             <Stack mt='6' spacing='3'>
             <Heading size='md'>{recipe.title}</Heading>
             <Text>
-                Have: {recipe.usedIngredientCount}   
+                <b>Have:</b> {recipe.usedIngredientCount}   
             </Text>
-            <UnorderedList>
-            {instock.map((a) => (
-                    <ListItem key={a.id}>{a.name} {a.amount} {a.unit}</ListItem>
-                ))}
-            </UnorderedList>
+           
             
             <Text>
-                Missing: {recipe.missedIngredientCount}
+                <b>Missing:</b> {recipe.missedIngredientCount}
             </Text>
-            <UnorderedList>
-            {nostock.map((a) => (
-                    <ListItem key={a.id}>{a.name} {a.amount} {a.unit}</ListItem>
-                ))}
-            </UnorderedList>
+
             </Stack>
         </CardBody>
         <Divider />
         <CardFooter>
             <ButtonGroup spacing='2'>
-            <Button variant='solid' colorScheme='teal'>
+            <Button variant='solid' colorScheme='teal' onClick={() => setShow(!show)}>
                 More info
             </Button>
             <Button variant='ghost' colorScheme='teal'>
@@ -48,13 +45,11 @@ function RecipeCard({recipe}) {
         </CardFooter>
     </Card>
 
-    <Flex
-    width='100%'
-    height='100%'
-    >
-        
+    {show && (
+      <GeneratedRecipeInfo key={recipe.id} show={show} setShow={setShow} recipe={recipe}/>
+    )}
 
-    </Flex>
+ 
     </>
   )
 }

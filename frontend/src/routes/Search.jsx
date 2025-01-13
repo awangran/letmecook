@@ -82,7 +82,7 @@ function Search() {
   }, [propArray])
 
 
- /* ORIGINAL FETCH FUNCTIONNNN
+ //ORIGINAL FETCH FUNCTIONNNN
   //Fetch recipes from spoonocular api after ingredients load
   const fetchRecipes = (propString) => {
     // Fetch from API if not in local storage
@@ -92,20 +92,21 @@ function Search() {
     if (propString !== '') {
       console.log(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${propString}&fillIngredients=true&addRecipeInformation=true&sort=min-missing-ingredients&number=1`)
       axios
-      .get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${propString}&fillIngredients=true&addRecipeInformation=true&sort=min-missing-ingredients&number=1`)
+      .get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${propString}&fillIngredients=true&addRecipeInformation=true&sort=min-missing-ingredients&number=2`)
       .then((res) => {
         setRecipes(res.data.results);
         console.log('recipe fetched')
+        console.log(res)
       })
       .catch((err) => {
         console.log(err);
       });
     }
   };
-   */
+   
 
   //TESTING FETCH FUNCTION
-  const fetchRecipes = (propString) => {
+  /* const fetchRecipes = (propString) => {
     const apiKey = import.meta.env.VITE_API_KEY;
     const localStorageKey = "firstRecipe";
   
@@ -120,7 +121,7 @@ function Search() {
     if (propString !== "") {
       axios
         .get(
-          `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${propString}&fillIngredients=true&addRecipeInformation=true&sort=min-missing-ingredients&number=1`
+          `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${propString}&fillIngredients=true&addRecipeInformation=true&sort=min-missing-ingredients&sort=popularity&number=1`
         )
         .then((res) => {
           const fetchedRecipes = res.data.results;
@@ -138,7 +139,7 @@ function Search() {
           console.error(err);
         });
     }
-  };
+  }; */
   
   //testing
   useEffect(() => {
@@ -160,20 +161,15 @@ function Search() {
       >
       {recipes && recipes.length > 0 ? (
         recipes.map((recipe) => (
-          <RecipeCard key={recipe.id} recipe={recipe} />
+          <RecipeCard key={recipe.id} recipe={recipe}/>
         ))
       ) : (
         <p>Loading recipes...</p>
       )}
 
-
-      
-         
-    
-
-
-
     </Flex>
+
+    
 
 
     
