@@ -99,9 +99,9 @@ function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show, s
             <HStack gap={6}>
                 <Flex>
                 <Img 
-                    src='https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/ras/Assets/0749D9BC-260D-40F4-A07F-54814C4A82B4/Derivates/A73A7793-F3EE-4B90-ABA4-1CC1A0C3E18F.jpg' 
-                    alt='Sushi'
-                    boxSize='200px'
+                    src={recipe.image}
+                    alt='Recipe Image'
+                    boxSize='fit-content'
                     objectFit='cover'
                     borderRadius={10}
                     >
@@ -110,20 +110,26 @@ function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show, s
                 <Flex direction='column'>
                 <Flex justifyContent='left' alignItems='center' gap={4}>
                     <Heading color='teal'>{recipe.name}</Heading> 
+                    <Icon fontSize='25px'> 
                     <GiPlainCircle fontSize='25px' color={canmake} />
+                    </Icon>
                     <Icon as={MdEdit} onClick={handleOpenEdit} color='teal' fontSize='25px' cursor='pointer'/>
+                    <Icon fontSize='25px'> 
                     <MdOutlineAddShoppingCart
                     cursor='pointer'
                     fontSize='25px'
                     color='teal'
                     onClick={addRecipeCart}
                     />
+                    </Icon>
+                    <Icon fontSize='25px'> 
                     <IoTrash
                     cursor='pointer'
                     fontSize='25px'
                     color='teal'
                     onClick={onOpen}
                     />
+                    </Icon>
                     
                     </Flex>
                     <Text><b>Prep time:</b> {times[0]} min</Text>
@@ -151,10 +157,11 @@ function RecipeInfo({recipe, canmake, times, tags, ingredients, setShow, show, s
             <HStack gap={6} mt={4}>
                 <Flex direction='column' width='200px'>
                     <Text><b>Link:</b> <a href={recipe.link}><u>recipe</u></a></Text>
-                    <Flex direction='column' gap={2} >
+                    <Flex direction='column' overflowWrap='wrap' gap={2} >
                         <Text><b>Ingredients</b></Text>
                         {ingredients.map((item) => (
-                            <Badge colorScheme='teal' width='fit-content' key={item.name}>
+                            <Badge colorScheme='teal' width='fit-content' whiteSpace="normal" 
+                            overflowWrap="break-word"  maxWidth='200px' key={item.name}>
                             {item.number} {item.unit} {item.name} 
                             </Badge>
                         ))}

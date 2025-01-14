@@ -97,12 +97,12 @@ function Recipe({recipe, fetchRecipes, recipes, showAlert}) {
     <>
     
 
-    <Flex margin={2} p={4} border='solid' borderRadius='10px' borderColor='teal' width='fit-content' height='fit-content' >
+    <Flex margin={2} p={4} border='solid' borderRadius='10px' borderColor='teal' width='400px' height='200px' >
         <HStack>
-            <Flex>
+            <Flex  >
                 <Img 
-                src='https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/ras/Assets/0749D9BC-260D-40F4-A07F-54814C4A82B4/Derivates/A73A7793-F3EE-4B90-ABA4-1CC1A0C3E18F.jpg' 
-                alt='Sushi'
+                src={recipe.image} 
+                alt='Recipe Image'
                 boxSize='130px'
                 objectFit='cover'
                 borderRadius={10}
@@ -112,7 +112,7 @@ function Recipe({recipe, fetchRecipes, recipes, showAlert}) {
             </Flex>
             <Flex direction='column'>
                 <Flex alignItems='center' gap={2} justifyContent='space-between' >
-                    <Text fontWeight='600' fontSize='xl' color='teal'>{recipe.name}</Text>
+                    <Text fontWeight='600' fontSize='l' color='teal' overflowWrap='break-word'>{recipe.name}</Text>
                     <GiPlainCircle color={canmake} />
                 </Flex>
                 <Text>Time: {times[2]} min</Text>

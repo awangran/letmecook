@@ -3,8 +3,12 @@ import React from 'react'
 import { GiPlainCircle } from 'react-icons/gi'
 import { IoClose, IoTrash } from 'react-icons/io5'
 import { MdEdit, MdOutlineAddShoppingCart } from 'react-icons/md'
+import SaveRecipe from './SaveRecipe'
+import { useState } from 'react'
 
-function GeneratedRecipeInfo({recipe, setShow, show}) {
+function GeneratedRecipeInfo({recipe, setShow, show, make, products, showAlert}) {
+    const [showSave, setShowSave] = useState(false);
+
   return (
 
     <>    
@@ -14,7 +18,7 @@ function GeneratedRecipeInfo({recipe, setShow, show}) {
         position='absolute' 
         top='0' 
         justifyContent='center'
-        zIndex='10'
+        zIndex='9'
         left='0'
         >
         <Flex width='50%' height='fit-content' boxShadow='12px 12px 2px 1px teal' p={10} direction='column' position='absolute' top='25%' backgroundColor='teal.50' borderRadius='10px'>
@@ -39,13 +43,11 @@ function GeneratedRecipeInfo({recipe, setShow, show}) {
                 </Flex>
                 <Flex direction='column'>
                 <Flex justifyContent='left' alignItems='center' gap={4}>
+                    <Icon fontSize='25px'> 
+                    <GiPlainCircle color={make}/>
+                    </Icon>
+
                     <Heading color='teal'>{recipe.title}</Heading> 
-                    <GiPlainCircle fontSize='25px' />
-                    <MdOutlineAddShoppingCart
-                    cursor='pointer'
-                    fontSize='25px'
-                    color='teal'
-                    />
                   
                     
                     </Flex>
@@ -119,8 +121,8 @@ function GeneratedRecipeInfo({recipe, setShow, show}) {
             </HStack>
 
             <Flex my={4} justifyContent='center'>
-                <Button mr={2} colorScheme='teal' variant='outline' onClick={()=> setShow(!show)}>Close</Button>
-                <Button mr={2} colorScheme='teal' >Save</Button>
+                <Button mr={2} colorScheme='teal' variant='outline' onClick={() => setShow(!show)}>Close</Button>
+                <Button mr={2} colorScheme='teal' onClick={() => setShowSave(!showSave)}>Save</Button>
 
             </Flex>
             
@@ -128,6 +130,9 @@ function GeneratedRecipeInfo({recipe, setShow, show}) {
 
         </Flex>
         </Flex>
+        {showSave && (
+            <SaveRecipe key={recipe.id} recipe={recipe} setShowSave={setShowSave} showSave={showSave} products={products} showAlert={showAlert}/>
+        )}
 
     </>
   )

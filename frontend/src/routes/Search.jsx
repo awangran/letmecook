@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Button, filter, Flex, Heading, HStack, Icon, Spacer } from '@chakra-ui/react'
+import { Alert, AlertIcon, Box, Button, CloseButton, filter, Flex, Heading, HStack, Icon, Slide, Spacer } from '@chakra-ui/react'
 import Searchbar from '../components/search/Searchbar';
 import axios from 'axios';
 import Navbar from '../components/search/Navbar';
 import RecipeCard from '../components/search/RecipeCard';
+import { v4 as uuid } from 'uuid';
 
 function Search() {
   const [recipes, setRecipes] = useState([]);
@@ -12,6 +13,9 @@ function Search() {
   const [includeingredients, setIncludeingredients] = useState(ingredients);
   const [filterprops, setFilterProps] = useState();
   const [propArray, setPropArray] = useState([]);
+
+  const [alerts, setAlerts] = useState([]);
+  const [queue, setQueue] = useState([]);
 
   //Fetch products from db
   const fetchProducts = () => {
@@ -82,7 +86,7 @@ function Search() {
   }, [propArray])
 
 
- //ORIGINAL FETCH FUNCTIONNNN
+ /* //ORIGINAL FETCH FUNCTIONNNN
   //Fetch recipes from spoonocular api after ingredients load
   const fetchRecipes = (propString) => {
     // Fetch from API if not in local storage
@@ -102,11 +106,11 @@ function Search() {
         console.log(err);
       });
     }
-  };
+  }; */
    
 
   //TESTING FETCH FUNCTION
-  /* const fetchRecipes = (propString) => {
+  const fetchRecipes = (propString) => {
     const apiKey = import.meta.env.VITE_API_KEY;
     const localStorageKey = "firstRecipe";
   
@@ -139,7 +143,27 @@ function Search() {
           console.error(err);
         });
     }
-  }; */
+  }; 
+
+  // Function to add an alert to the queue
+  const showAlert = (status, message) => {
+    const id = uuid();
+    setQueue((prev) => [...prev, { id, status, message }]);
+  };
+
+  // Effect to process the queue
+  useEffect(() => {
+    if (queue.length > 0 && alerts.length === 0) {
+      const nextAlert = queue[0];
+      setAlerts([nextAlert]); // Show the next alert
+
+      // Remove the alert after 3 seconds
+      setTimeout(() => {
+        setAlerts([]);
+        setQueue((prev) => prev.slice(1)); 
+      }, 3000);
+    }
+  }, [queue, alerts]);
   
   //testing
   useEffect(() => {
@@ -151,6 +175,24 @@ function Search() {
     <>
     <Navbar/>
     <Flex justifyContent='center' width='100%'>
+      {/* Alert Container */}
+      <Box position="fixed" top="10px" right="10px" zIndex="1000">
+        {alerts.map((alert) => (
+          <Slide key={alert.id} direction="top" in={true}>
+            <Alert status={alert.status} borderRadius="md" boxShadow="md" mb={4}>
+              <AlertIcon />
+              {alert.message}
+              <CloseButton
+                position="absolute"
+                right="8px"
+                top="8px"
+                onClick={() => setAlerts((prev) => prev.filter((a) => a.id !== alert.id))}
+              />
+            </Alert>
+          </Slide>
+        ))}
+      </Box>
+
     <Searchbar products={products} setFilterProps={setFilterProps} fetchRecipes={fetchRecipes} ingredients={ingredients}/>
     </Flex>
     <Flex wrap="wrap" 
@@ -161,7 +203,7 @@ function Search() {
       >
       {recipes && recipes.length > 0 ? (
         recipes.map((recipe) => (
-          <RecipeCard key={recipe.id} recipe={recipe}/>
+          <RecipeCard key={recipe.id} recipe={recipe} products={products} showAlert={showAlert}/>
         ))
       ) : (
         <p>Loading recipes...</p>
