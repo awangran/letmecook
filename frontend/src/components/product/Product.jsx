@@ -9,6 +9,12 @@ import { format } from 'date-fns';
 import { differenceInDays } from 'date-fns';
 import axios from 'axios';
 import EditProduct from './EditProduct';
+import { FaBowlRice,FaCarrot } from "react-icons/fa6";
+import { GiChipsBag,GiWrappedSweet,GiSaltShaker,GiMilkCarton,GiMeat,GiFruitBowl } from "react-icons/gi";
+import { HiArchiveBox, HiArchiveBoxXMark } from "react-icons/hi2";
+import { CiInboxIn, CiInboxOut, CiMoneyBill } from "react-icons/ci";
+
+
 import {
     AlertDialog,
     AlertDialogBody,
@@ -27,14 +33,17 @@ export default function Product({ product, fetchProducts, showAlert }) {
     //formatting date
     const [show, setShow] = useState(false);
     const dateinraw = product.dateIn
-    const datein = format(dateinraw, 'MMMM do, yyyy')
+    const datein = format(dateinraw, 'P')
     const dateoutraw = product.dateOut
-    const dateout = format(dateoutraw, 'MMMM do, yyyy')
+    const dateout = format(dateoutraw, 'P')
     const id = product._id
 
     const [qualityColor, setQualityColor] = useState()
     const [stockstatus, setStock] = useState()
+    const [icon, setIcon] = useState()
+    const [stockcolor, setStockColor] = useState()
 
+    const [hover, setHover] = useState(false)
 
 
     //calculating quality
@@ -57,17 +66,57 @@ export default function Product({ product, fetchProducts, showAlert }) {
         
     }
 
-
+    const stockMap = {
+        instock: HiArchiveBox,
+        nostock: HiArchiveBoxXMark
+    }
     const calculateStock = () => {
         const stock = product.stock
-        setStock(stock ? 'In Stock' : 'No Stock')
+        setStock(stock ? 'instock' : 'nostock')
+        setStockColor(stock ? '#7ad6cd' : '#bad1cf')
     }
+
+    const StockComponent = stockMap[stockstatus];
+
+
+    const iconMap = {
+        meat: GiMeat,
+        milk: GiMilkCarton,
+        rice: FaBowlRice,
+        carrot:FaCarrot,
+        fruit: GiFruitBowl,
+        salt: GiSaltShaker,
+        chips: GiChipsBag,
+        sweet: GiWrappedSweet
+      };
+
+    const calculateIcon = () => {
+        if (product.type == 'Protein'){
+            setIcon(`meat`)
+        } else if (product.type == 'dairy'){
+            setIcon('milk')
+        } else if (product.type == 'grains'){
+            setIcon('rice')
+        } else if (product.type == 'vegetables'){
+            setIcon('carrot')
+        } else if (product.type == 'fruits'){
+            setIcon('duit')
+        } else if (product.type == 'pantry'){
+            setIcon('salt')
+        } else if (product.type == 'snacks'){
+            setIcon('chips')
+        } else if (product.type == 'sweets'){
+            setIcon('sweet')
+        } 
+    }
+    const IconComponent = iconMap[icon];
 
      // Set up interval to check the date every day
      useEffect(() => {
         // Call the function when the component mounts
         calculateQuality();
         calculateStock();
+        calculateIcon();
 
         // Set up a daily interval (check every 24 hours)
         const intervalId = setInterval(() => {
@@ -88,7 +137,7 @@ export default function Product({ product, fetchProducts, showAlert }) {
             fetchProducts();
         })
         .catch((error) => {
-            showAler('error', 'An error happened. Check console.');
+            showAlert('error', 'An error happened. Check console.');
             console.log(error);
         });
     }
@@ -132,33 +181,47 @@ export default function Product({ product, fetchProducts, showAlert }) {
 
   return (
     <>
-    <Box p={2} border='2px' borderColor='teal' width='230px' borderRadius='10px'>
-        <Flex alignItems='center' justifyContent='space-between' onClick={()=> setShow(!show)}>
-            <Text fontWeight='600'>{product.product}</Text> 
-            
-            <Flex alignItems='center' gap={2}> 
-                <Text>{stockstatus}</Text>
-                <GiPlainCircle color={qualityColor} />
+    <Box p={2} border='2px' borderColor='teal' width='130px' height='130px' borderRadius='10px'>
+        <Box>
+           <Box height='70px' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+           {!hover && (
+               <Flex alignItems='center' direction='column' justifyContent='space-between' onClick={()=> setShow(!show)}>
+               <Flex alignItems='right' width='100%' justifyContent='space-between' gap={2}>
+                   <Icon as={StockComponent} color={stockcolor} />
+                   <GiPlainCircle color={qualityColor} />
+               </Flex>
+               <Icon color='teal' as={IconComponent}  fontSize='35px'>
+               </Icon>
+   
+               <Text fontWeight='600'>{product.product}</Text> 
+               
+               <Flex alignItems='center' gap={2}> 
+               </Flex>
+               </Flex> 
+           )}
+
+            {hover && (
+            <Flex height='100%' direction='column' p={2}>
+                <Flex alignItems='center'>
+                    <CiInboxIn fontSize='20px' fontWeight='bold' />
+                    <Text ml={2} fontSize='12px'> {datein}</Text>
+                </Flex> 
+                <Flex alignItems='flex-end' >
+                    <CiInboxOut fontSize='20px'/>
+                    <Text  ml={2} fontSize='12px'> {dateout}</Text>
+                </Flex>
+                <Flex alignItems='center' >
+                    <CiMoneyBill fontSize='20px'/>
+                    <Text ml={2} fontSize='12px'> ${product.cost}</Text>
+                </Flex>
+                
+                
+                
             </Flex>
-
-            
-
-        </Flex>
-
-        <Flex alignItems='end' justifyContent='space-between'>
-            <Flex direction='column'>
-                <Text>{product.quantity.number} {product.quantity.unit}</Text>
-                {show && (
-                <>
-                    <Text><b>In:</b> {datein}</Text>
-                    <Text><b>Out:</b> { dateout}</Text>
-                    <Text><b>Cost:</b> ${product.cost}</Text>
-                </>
-                )}
-                    
-            </Flex>
-
-            <Flex gap={2}>
+            )}
+            </Box>
+          
+            {!hover && (<Flex alignItems='center' justifyContent='center' mt={4} width='100%' gap={2}>
             <Icon as={MdOutlineAddShoppingCart}  onClick={() => addToCart(product)}
                 sx={{
                 color: 'grey',
@@ -179,10 +242,19 @@ export default function Product({ product, fetchProducts, showAlert }) {
                     _hover: { color: 'teal.400', cursor: 'pointer'  },  // Hover styles
                 }}
                 />
-            </Flex>
+            </Flex>)}
 
-        </Flex>
+            {hover && (
+            <Text fontSize='md' fontWeight='bold' textAlign='center'>{product.quantity.number} {product.quantity.unit}</Text>
+
+            )}
+
+
+            
+        </Box>
     </Box>
+
+
     <EditProduct isOpen={isOpen1} onClose={onClose1} fetchProducts={fetchProducts} id={id} showAlert={showAlert} />
     
     <AlertDialog

@@ -86,7 +86,7 @@ function Search() {
   }, [propArray])
 
 
- /* //ORIGINAL FETCH FUNCTIONNNN
+  //ORIGINAL FETCH FUNCTIONNNN
   //Fetch recipes from spoonocular api after ingredients load
   const fetchRecipes = (propString) => {
     // Fetch from API if not in local storage
@@ -96,7 +96,7 @@ function Search() {
     if (propString !== '') {
       console.log(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${propString}&fillIngredients=true&addRecipeInformation=true&sort=min-missing-ingredients&number=1`)
       axios
-      .get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${propString}&fillIngredients=true&addRecipeInformation=true&sort=min-missing-ingredients&number=2`)
+      .get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&${propString}&fillIngredients=true&addRecipeInformation=true&sort=min-missing-ingredients&number=5`)
       .then((res) => {
         setRecipes(res.data.results);
         console.log('recipe fetched')
@@ -106,9 +106,9 @@ function Search() {
         console.log(err);
       });
     }
-  }; */
+  }; 
    
-
+/* 
   //TESTING FETCH FUNCTION
   const fetchRecipes = (propString) => {
     const apiKey = import.meta.env.VITE_API_KEY;
@@ -144,7 +144,7 @@ function Search() {
         });
     }
   }; 
-
+ */
   // Function to add an alert to the queue
   const showAlert = (status, message) => {
     const id = uuid();
