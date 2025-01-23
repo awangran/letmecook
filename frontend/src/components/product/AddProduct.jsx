@@ -145,8 +145,9 @@ import {
                         <option value='vegetables'>Vegetables</option>
                         <option value='grains'>Fruits</option>
                         <option value='pantry'>Pantry</option>
-                        <option value='grains'>Snacks</option>
-                        <option value='grains'>Sweets</option>
+                        <option value='snacks'>Snacks</option>
+                        <option value='sweets'>Sweets</option>
+                        <option value='drinks'>Drinks</option>
                                 
                     </Select>
                 </Flex>

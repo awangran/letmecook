@@ -13,6 +13,7 @@ import { FaBowlRice,FaCarrot } from "react-icons/fa6";
 import { GiChipsBag,GiWrappedSweet,GiSaltShaker,GiMilkCarton,GiMeat,GiFruitBowl } from "react-icons/gi";
 import { HiArchiveBox, HiArchiveBoxXMark } from "react-icons/hi2";
 import { CiInboxIn, CiInboxOut, CiMoneyBill } from "react-icons/ci";
+import { RiDrinks2Fill } from "react-icons/ri";
 
 
 import {
@@ -87,11 +88,12 @@ export default function Product({ product, fetchProducts, showAlert }) {
         fruit: GiFruitBowl,
         salt: GiSaltShaker,
         chips: GiChipsBag,
-        sweet: GiWrappedSweet
+        sweet: GiWrappedSweet,
+        drink: RiDrinks2Fill
       };
 
     const calculateIcon = () => {
-        if (product.type == 'Protein'){
+        if (product.type == 'protein'){
             setIcon(`meat`)
         } else if (product.type == 'dairy'){
             setIcon('milk')
@@ -100,13 +102,15 @@ export default function Product({ product, fetchProducts, showAlert }) {
         } else if (product.type == 'vegetables'){
             setIcon('carrot')
         } else if (product.type == 'fruits'){
-            setIcon('duit')
+            setIcon('fruit')
         } else if (product.type == 'pantry'){
             setIcon('salt')
         } else if (product.type == 'snacks'){
             setIcon('chips')
         } else if (product.type == 'sweets'){
             setIcon('sweet')
+        } else if (product.type == 'drinks'){
+            setIcon('drink')
         } 
     }
     const IconComponent = iconMap[icon];
@@ -181,9 +185,9 @@ export default function Product({ product, fetchProducts, showAlert }) {
 
   return (
     <>
-    <Box p={2} border='2px' borderColor='teal' width='130px' height='130px' borderRadius='10px'>
+    <Box p={2} border='2px' borderColor='teal' width='130px' height='150px' borderRadius='10px'>
         <Box>
-           <Box height='70px' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+           <Box height='90px' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
            {!hover && (
                <Flex alignItems='center' direction='column' justifyContent='space-between' onClick={()=> setShow(!show)}>
                <Flex alignItems='right' width='100%' justifyContent='space-between' gap={2}>
@@ -193,11 +197,11 @@ export default function Product({ product, fetchProducts, showAlert }) {
                <Icon color='teal' as={IconComponent}  fontSize='35px'>
                </Icon>
    
-               <Text fontWeight='600'>{product.product}</Text> 
+               <Text fontWeight='600' textAlign='center'>{product.product}</Text> 
                
                <Flex alignItems='center' gap={2}> 
                </Flex>
-               </Flex> 
+               </Flex>  
            )}
 
             {hover && (

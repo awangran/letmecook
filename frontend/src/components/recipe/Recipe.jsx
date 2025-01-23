@@ -99,7 +99,7 @@ function Recipe({recipe, fetchRecipes, recipes, showAlert}) {
 
     <Flex margin={2} p={4} border='solid' borderRadius='10px' borderColor='teal' width='400px' height='200px' >
         <HStack>
-            <Flex  >
+            {/* <Flex  >
                 <Img 
                 src={recipe.image} 
                 alt='Recipe Image'
@@ -109,7 +109,7 @@ function Recipe({recipe, fetchRecipes, recipes, showAlert}) {
                 >
 
                 </Img>
-            </Flex>
+            </Flex> */}
             <Flex direction='column'>
                 <Flex alignItems='center' gap={2} justifyContent='space-between' >
                     <Text fontWeight='600' fontSize='l' color='teal' overflowWrap='break-word'>{recipe.name}</Text>
